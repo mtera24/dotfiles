@@ -1,174 +1,5 @@
 ;;; Commentary:
 
-;;;; Emacsおよび関連ソフトのインストール方法
-;;;;; Ubuntu
-;;    % sudo add-apt-repository ppa:cassou/emacs
-;;    % sudo apt-get update
-;;    % sudo apt-get install emacs-snapshot
-;;    % emacs-snapshot
-
-;;;;; Ubuntu Source Build
-;;    % sudo apt-get install build-essential
-;;    % sudo apt-get build-dep emacs23
-;;    % sudo apt-get install git ccache
-;;    % export PATH=/usr/lib/ccache:$PATH
-;;    % git clone git://git.savannah.gnu.org/emacs.git
-;;    % cd emacs
-;;    % ./configure
-;;    % make
-;;    % sudo make install
-
-;;;;; Macintosh (Yamamoto Patch)
-;; http://www.math.s.chiba-u.ac.jp/~mituharu/emacs-mac.git
-;; -  更新履歴
-;;    * emacs-24.5-mac-5.15 (2015-12-13)
-;;    * emacs-24.5-mac-5.14 (2015-12-09)
-;;    * emacs-24.5-mac-5.13 (2015-10-31)
-;;    * emacs-24.5-mac-5.12 (2015-10-30)
-;;    * emacs-24.5-mac-5.11 (2015-09-27)
-;;
-;; - Brew
-;;   日本語インラインパッチ付き
-;;   % brew install --cocoa --srgb --with-gnutls --japanese emacs -v
-;;
-;; - git
-;;   % git clone http://www.math.s.chiba-u.ac.jp/~mituharu/emacs-mac.git/
-;;   % cd emacs-mac
-;;   % ./autogen.sh
-;;   % ./configure --enable-mac-app --with-mac CC="/usr/bin/gcc"
-;;   % make
-;;   % sudo make install
-;;
-;; - パッチを使う場合
-;;   % wget ftp://alpha.gnu.org/gnu/emacs/pretest/emacs-24.5-rc3.tar.xz
-;;   % wget ftp://ftp.math.s.chiba-u.ac.jp/emacs/emacs-24.5-rc3-mac-5.6.tar.gz
-;;   % tar xfz emacs-24.5-rc3-mac-5.6.tar.gz
-;;   % tar xfJ emacs-24.5-rc3.tar.xz
-;;   （アイコンを変更したい場合）
-;;   % wget ftp://ftp.math.s.chiba-u.ac.jp/emacs/emacs-hires-icons-1.0.tar.gz
-;;   % tar xfz emacs-hires-icons-1.0.tar.gz
-;;   % cd emacs-24.5
-;;   （ここまで）
-;;   % cat ../emacs-24.5-rc3-mac-5.6/patch-mac | patch -p1   # （注意。場合によっては -p0）
-;;   % rsync -av ../emacs-24.5-rc3-mac-5.6/mac/ ./mac/
-;;   % rsync -av ../emacs-24.5-rc3-mac-5.6/src/ ./src/
-;;   % rsync -av ../emacs-24.5-rc3-mac-5.6/lisp/ ./lisp/
-;;   （アイコンを変更したい場合）
-;;   % cp ./nextstep/Cocoa/Emacs.base/Contents/Resources/Emacs.icns ./mac/Emacs.app/Contents/Resources/Emacs.icns
-;;   % cp -pr ../emacs-hires-icons-1.0/etc/images/* ./etc/images
-;;   （ここまで）
-;;   % ./configure --enable-mac-app --with-mac CC="/usr/bin/gcc"
-;;   ※ 注意 :: --enable-profiling は絶対に指定してはいけない。（速度が極端に遅くなる。）
-;;   ※ 注意 :: 'unrecognized command line option "-fconstant-cfstrings" ならば、/usr/bin/gcc の代わりに /usr/local/bin/gcc が使われている。
-;;   % make # -j CC="/usr/bin/gcc -std=gnu99" CFLAGS=-g3 bootstrap
-;;   % sudo make install
-
-;;;;; Macintosh (HEAD / NS)
-;;
-;; - ccache による再コンパイルの高速化
-;;   : brew install ccache
-;;   : export PATH=/usr/local/opt/ccache/libexec:$PATH
-;;   : ./configure --with-ns
-;;   : make bootstrap
-;;   : make install
-;; - パッケージのインストール
-;;   : cd ~/.emacs.d/
-;;   : EMACS=/Users/kawabata/cvs/emacs/nextstep/Emacs.app/Contents/MacOS/Emacs cask install
-;;   （およそ２０分程度かかる。~/.emacs.d/.cask/25.1.50.1/elpa/ のタイムスタンプで進捗を確認）
-;; - 起動
-;;  （バイトコンパイル済の init.elc の読み込みは抑止する）
-;;   : /Users/kawabata/cvs/emacs/nextstep/Emacs.app/Contents/MacOS/Emacs -q
-;;   : M-x load-file ⏎ ~/.emacs.d/init.el
-;;
-;; + トラブルシューティング
-;;   tputs がない、というエラーが出たら、config.log のエラー出力場所をよく見る。
-;;   librsvg 等、思わぬライブラリが悪さをしていることがある。関係ライブラリを一度、
-;;   アンインストールして再度インストールする。
-;;   freetype がないと、フォントはまともに表示できない。
-;;   ./configure 時に、freetype=no と出る場合は、以下を試すとうまくいく場合がある。
-;;  % ln -s /usr/local/opt/freetype/include/freetype2 /usr/local/include/freetype
-
-;;;;; Macintosh (HEAD / X-Windows)
-;; - Troubleshooting
-;;  : unexec: not enough room for load commands for new __DATA segments
-;;  : make[2]: *** [bootstrap-emacs] Error 1
-;;  : make[1]: *** [src] Error 2
-;;  : make[1]: *** Waiting for unfinished jobs....
-;;  : make: *** [bootstrap] Error 2
-;;
-;;  上記のエラーがでたら、{src,lib}/Makefile の
-;;  LD_SWITCH_SYSTEM_TEMACS の headerpad_extra の値に注意する。
-;;  変更：690→6C8
-;;  configure.ac のif文がミスしている場合あり。
-
-;;;;; Windows
-;; - GnuPack (13.00-2015.05.05)
-;;   + URL :: http://sourceforge.jp/projects/gnupack/releases/p10360
-;;   + GnuPack の機能をフルに活かすには、Cygwin のgpgなどのコマンドが必要。
-;;   + ホームディレクトリに .emacs.d のシンボリックリンクを作成する。
-;;     mklink を使ってもよいが、CYGWIN で、export CYGWIN="winsymlinks:nativestrict"
-;;     を宣言すれば、ln コマンドも利用できる。
-;;
-;;   + コマンドプロンプトで emacs.exe を --debug-init で起動可。
-;;   + Windows では Cask は動かないので、use-package の :ensure を利用。
-;;
-;;   + Cygwin と Emacs ではパスは以下のように異なるので注意。
-;;     - "c:/Windows/system32" → "/cygdrive/c/windows/system32"
-;;     - "path1;path2;path3"   → "path1:path2:path3"
-;;     parse-colon-path 関数が自動的に環境に応じて処理してくれる。
-;;     なお、cygwin の rootディレクトリは
-;;     HKEY_LOCAL_MACHINE\SOFTWARE\Cygwin\setup\rootdir = C:\cygwin64
-;;     となっているが、これは当然、Emacsからは見えないので、
-;;     (getenv "SHELL") に /bin/sh があってもアクセスできない。
-;;
-;; - 個別設定
-;;   [SetEnv]
-;;   CYGWIN_DIR     = C:\cygwin64
-;;     + HOME を自分のディレクトリにする。
-;;     + color_theme をコメントアウトする。
-
-;;;;; Cask
-;; - マニュアル
-;;   http://cask.github.io/dsl.html
-;; - 開発ガイド
-;;   http://www.kaichan.info/blog/2014-02-23-emacs-cask.html
-;; - Linux
-;;   : $ curl -fsSkL https://raw.github.com/cask/cask/master/go | python
-;; - Mac
-;;   : $ brew install cask
-;;   : % cask upgrade # upgrade-cask でもOK
-
-;;;;; 個別パッケージインストール
-;; - m17n-lib (https://savannah.nongnu.org/projects/m17n)
-;;   - コンパイルには libintl.h が必要なため、
-;;     : brew install gettext
-;;     : brew link gettext (gettext はkeg onlyなため)
-;;     を実行する。
-;; - TeX (MacTeX, W32TeX, TexLive) (/usr/texbin/)
-;; - Go Language (/usr/local/go)
-;; - Digital Mars D language
-;; - GnuPG (Agent)
-;;   MacGPGの場合はシステム環境設定のGPGPreferencesにおいて
-;;   "Store Password in KeyChain" を設定
-;; - R (http://cran.r-project.org/bin/macosx/)
-;; - X Windows (XQuartz)
-;; - csharp
-;;   MDK (http://www.mono-project.com/download/)
-;;   自動的に /usr/bin に mcs がインストールされる。
-;; - パッケージマネージャ (MacPorts/HomeBrew) でインストール
-;;   + Haskell / Cabal (Pandoc via Cabal)
-;;     - インストール
-;;       : % export PATH=$HOME/Library/Haskell/bin:$PATH
-;;       : % cabal update
-;;       : % cabal install cabal-install
-;;     - トラブルシューティング
-;;       : % ghc-pkg check
-;;       : % sudo ghc-pkg recache
-;;       : % cabal install --reinstall --force-reinstall <pkg-name>
-;;     - 全削除
-;;       : % rm ~/.ghc ~/.cabal
-;;   + Maxima
-
 ;;;; Emacsの公式ドキュメント一覧
 ;; - [[info:emacs#Top][Emacs]]
 ;; - [[info:eintr#Top][An Introduction to Programming in Emacs Lisp]]
@@ -183,46 +14,7 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
-(setq init-file-debug t)
 (cd "~/") ; ホームディレクトリにcd
-(setq force-load-messages t)
-(message (format "Startup time: %s" (format-time-string "%Y/%m/%d %H:%M:%S")))
-
-;; 本ファイルで使用するマクロと関数の定義
-;;;; ライブラリ遅延読み込み
-;; hinted by http://lunaryorn.com/blog/2013/05/31_byte-compiling-eval-after-load.html
-;; * with-eval-after-load (Emacs 24.4 から)
-;;   バイトコンパイル時は、未定義マクロは関数とみなすので注意。
-(unless (fboundp 'with-eval-after-load)
-  (defmacro with-eval-after-load (file &rest body)
-    `(eval-after-load ,file
-       `(funcall (function ,(lambda () ,@body))))))
-
-;;;; 関数のコマンド化
-(defmacro command (&rest body)
-  `(lambda () (interactive) ,@body))
-
-;;;; major-mode のモードライン名を変更
-;; - minor-mode は diminishを使用する。
-(defun tkw-major-mode-lighter (mode string &optional face)
-  "Change the mode-line MODE lighter to STRING with FACE."
-  (let ((string (if face (propertize string 'face face) string)))
-    (add-hook (intern (concat (symbol-name mode) "-hook"))
-              `(lambda () (setq mode-name ,string)))))
-
-;;;; 大きすぎるファイルでは適用しないモードの判定
-(defun tkw-large-file-p (&optional char-size)
-  "現在のバッファの文字数が CHAR-SIZE を越えるか判定する.
-デフォルト値は 100,000."
-  (< (or char-size 100000) (point-max)))
-
-;;;; cask
-(eval-and-compile
-(if (or (require 'cask "/usr/local/share/emacs/site-lisp/cask/cask.el" t) ;; MacOS X (homebrew)
-        (require 'cask "~/.cask/cask.el" t)) ;; Linux (install by curl)
-    (cask-initialize)
-  (warn "Cask is not installed!")))
 
 ;;;; 初期化
 ;;   Emacsは init.el 読み込み後に各パッケージへのload-path設定を行い
@@ -230,7 +22,6 @@
 ;;   require/locate-library ができないため、(package-initialize) を事前
 ;;   に実行する。
 
-;;(require 'autoinsert) ; abc-mode-autoloads.el 対策。
 (package-initialize)
 (setq package-enable-at-startup nil) ; 初期化済みなので自動初期化は停止。
 
@@ -241,7 +32,6 @@
 
 ;; パッケージ読み込み後は、読み込みライブラリを表示する。
 ;; （繁雑な XXXX-autoload は表示させない。）
-
 ;; ただし、package-menu-execute 時のみ、(XXX-autoload.elを) 表示させない。
 (defadvice package-menu-execute (around tkw-package-menu-execute-suppress-load-messages)
   "Suppress displaying load file messages."
@@ -281,10 +71,6 @@
 ;;  (setq package-archives '(("marmalade" . "http://marmalade-repo.org/packages/")))
 ;;  (list-packages))
 
-;;;; Emacs 25 対策
-;; 2015年1月時点では、use-package の前にこれを読まないと Emacs 25 ではエラーになる。
-(require 'xref nil t)
-
 ;;;; use-package
 ;; - url :: https://github.com/jwiegley/use-package
 ;; 非標準パッケージは use-package で管理する。
@@ -305,34 +91,6 @@
 ;;;;; 形式的宣言
 (use-package use-package :no-require t :ensure t :defer t)
 
-;;;; pallet
-;; 自動的に ~/.emacs.d/Cask ファイル と Packaging を同期する。
-;; Network に繋がっていないとエラーになる。要対策。
-(use-package pallet :no-require t :ensure t
-  :commands (pallet-init)
-  :config
-  (condition-case nil
-        (pallet-init)
-      (error nil)))
-
-;;;; 要チェックライブラリ
-;; - logito
-;; - org-journal
-;; - org-magit
-;; - org-toc
-;; - polymode
-;; - prodigy
-;; - sourcemap
-;; - strie
-;; - sync-env
-;; - tern
-;; - theme-changer
-;; - ucs-cmds
-;; - ucs-utils
-;; - unicode-fonts
-;; - wisi
-;; - xmlgen
-
 ;;; キーボード設定
 ;;;; bind-key
 
@@ -345,41 +103,6 @@
   (defun bind-key (key cmd &optional keymap)
     (define-key (or keymap global-map) (kbd key) cmd))
   (defun bind-key* (key cmd) (global-set-key (kbd key) cmd))))
-
-(defun tkw-this-command-char ()
-  "Last character of `this-command'."
-  (string-to-char (substring (format-kbd-macro (this-command-keys)) -1)))
-
-;;;; 回転系コマンド
-;; 回転系コマンドは、doremi.el や、smartrep を使って実装する。
-;; | key | function               |
-;; |-----+------------------------|
-;; | f   | next-multiframe-window |
-;; | h   | rotate-han             |
-;; | k   | rotate-kana            |
-;; | l   | rotate-latin           |
-;; | s   | rotate-font-size       |
-;; | t   | rotate-theme           |
-(defvar tkw-rotate-map (make-sparse-keymap))
-
-(bind-key "M-r" tkw-rotate-map) ;; move-to-window-line-top-bottom を上書き
-(bind-key "M-R" tkw-rotate-map) ;; M-r が別の目的に使われていた場合
-
-;;;; emacs-24.4-mac-5.2 の新機能
-;; 詳細は macport.texi と macfns.c を参照。
-;; - US keyboard :: com.apple.keylayout.US
-;; - GoogleIME :: com.google.inputmethod.Japanese.base
-(declare-function mac-input-source "macterm.c")
-(declare-function mac-osa-script "macterm.c")
-(when (fboundp 'mac-select-input-source)
-  (defun tkw-mac-selected-keyboard-input-source-chage-function ()
-    (let ((mac-input-source (mac-input-source)))
-      (if (string-match "\\.US$" mac-input-source)
-          ;; (string-match "\\.Roman$" mac-input-source)
-          (set-cursor-color "Yellow")
-        (set-cursor-color "Red"))))
-  (add-hook 'mac-selected-keyboard-input-source-change-hook
-            'tkw-mac-selected-keyboard-input-source-chage-function))
 
 ;;; 標準設定
 ;;;; (emacs) 7 Basic
@@ -408,10 +131,6 @@
 ;;;;; (emacs) 12.3.2 Cut and Paste with Other Window Applications
 ;; VNC等で動きが遅くならないための工夫
 (setq select-active-regions nil)
-
-;;;;; (emacs) 12.5 Rectangles (rect.el)
-(bind-key "C-x r K" 'tkw-kill-rectangle-save)
-(bind-key "C-x r t" 'string-rectangle)
 
 ;;;; (emacs) 14 Controlling the Display
 ;;;;; (emacs) 14.16 Useless Whitespace
@@ -508,6 +227,7 @@
 ;; 上下スクロールする際に、カーソルが追随するかどうかを切替える。
 
 ;;;; (emacs) 21 Frames and Graphical Displays
+
 ;;;;; (emacs) 21.7 Frame Commands
 (bind-key "A-M-o" 'other-frame)
 
@@ -572,160 +292,9 @@
 ;  (setq package-archive-upload-base (locate-user-emacs-file "local-packages")))
 
 ;;;; (emacs) 48 Customization
-;;;;; (emacs) 48.1.4 Saving Customizations
-(setq custom-file (locate-user-emacs-file "custom.el"))
-;;;;; (emacs) 48.1.7 Custom Themes
-;; テーマを読み込む際にいちいち聞かない。
-(setq custom-safe-themes t)
-
-(defun tkw-delete-theme ()
-  "現在のthemeを全て削除する。"
-  (interactive)
-  (mapc 'disable-theme custom-enabled-themes))
-
-(defvar doremi-custom-themes) ; from doremi-cmds.el
-
-(defun tkw-rotate-theme-to (target)
-  (require 'doremi-cmd)
-  (if (null target) (tkw-delete-theme)
-    (when (member target doremi-custom-themes)
-      ;;(setq doremi-custom-themes (tkw-rotate-to doremi-custom-themes target))
-      (callf tkw-rotate-to doremi-custom-themes target)
-      (tkw-delete-theme)
-      (let ((custom-safe-themes t))
-        (load-theme (car doremi-custom-themes))))))
-
-
-;; My favorite themes
-;; C-x M-?
-
-;; 利用するthemeの条件
-;; org-mode の bullet がきちんと表示されること
-;; - alect-light*, ample
-
-(defvar tkw-theme-disabled
-  '(alect-light
-    alect-light-alt))
-
-(defvar tkw-theme-shortcut
-  '((?a . adwaita)
-    (?b . base16-railscasts)
-    (?c . colorsarenice-light)
-    (?d . dichromacy)
-    (?e . espresso)
-    (?f . fogus)
-    (?g . gandalf)
-    (?h . hemisu-light)
-    (?i . inkpot)
-    (?j . jonadabian)
-    (?k . kingsajz)
-    (?l . light-blue)
-    (?m . moe-light)
-    (?n . nzenburn)
-    (?o . occidental)
-    (?p . pastels-on-dark)
-    (?q . qsimpleq)
-    (?r . reverse)
-    (?s . smyx)
-    (?t . tango)
-    (?u . underwater)
-    (?v . vim-colors)
-    (?w . wombat)
-    (?x . xemacs)
-    (?y . xp)
-    (?z . zenburn)))
-
-;; M-r M-<key> で一発テーマ選択。
-(dolist (pair tkw-theme-shortcut)
-  (eval `(bind-key ,(format "M-%c" (car pair)) 'tkw-select-theme tkw-rotate-map)))
-
-(defun tkw-select-theme ()
-  "Select Theme by shortcut key."
-  (interactive)
-  (let* ((last-char (tkw-this-command-char))
-         (target (cdr (assoc last-char tkw-theme-shortcut))))
-    (tkw-rotate-theme-to target)))
 
 ;;;; (emacs) 50.1 If <DEL> Fails to Delete
 (normal-erase-is-backspace-mode 1)
-
-;;;; 8.1 Symbol Components
-;; Symbol Cells
-;; | symbol      | define | check   | set      | get             | remove       |
-;; |-------------+--------+---------+----------+-----------------+--------------|
-;; | name        |        |         | intern   | symbol-name     | unintern     |
-;; | dynamic val | devar  | boundp  | set      | symbol-value    | makunbound   |
-;; | lexical val |        |         | setq     | eval            |              |
-;; | function    | defun  | fboundp | fset     | symbol-function | fmakeunbound |
-;; | plist       |        |         | setplist | symbol-plist    |              |
-;; | property    |        |         | put      | get             | cl-remf      |
-;; |             |        |         |          | function-get    |              |
-;; ※ defvar の代わりに defconst, defcustom もありうる。
-;; ※ defun の代わりに defsubst や defalias もありうる。
-
-;;;; 9 Evaluation
-(bind-key "M-;" 'eval-region)
-(setq max-lisp-eval-depth 40000) ;; 600
-
-;;;; 11 Variables
-;;;;; 11.3 Local Variables
-(setq max-specpdl-size 100000) ;; 1300
-
-;;;;; 11.11 File Local Variables
-;; ファイルローカル変数を許可するか。
-;; (setq enable-local-variables t)
-
-;;;; 15.3 Library Search
-;; load-path の設定
-(defun add-to-load-path (dir)
-  "新しい DIR を load-path に追加する。"
-  (let ((default-directory dir))
-    (load (expand-file-name "subdirs.el") t t t))
-  (pushnew dir load-path :test 'equal))
-
-;; パッケージの load-pathの前に 個人のsite-lisp のpathを設定する。
-(add-to-load-path (locate-user-emacs-file "site-lisp"))
-;; 本来なら上記で、load-pathの先頭に site-lisp 以下のディレクトリが入る
-;; はずだが、なぜか入らないので以下のように無理やり順序を入れ替える。
-(let (site-lisp non-site-lisp)
-  (dolist (path load-path)
-    (if (string-match "/.emacs.d/site-lisp/" path) (push path site-lisp)
-      (push path non-site-lisp)))
-  (setq load-path (nconc (nreverse site-lisp) (nreverse non-site-lisp))))
-;; load-path の理想的な順番
-;; ( <site-lisp 以下> <elpa 関係> <標準elisp> )...
-
-
-;; ;;;; 18 Debugging
-;; ;;;;; 18.1.1 Entering the Debugger on an Error
-;; (setq debug-on-error t)
-;; (bind-key "C-c E" 'toggle-debug-on-error)
-
-;; ;;;;; 18.1.2 Debugging Infinite Loops
-;; ;;(setq debug-on-quit t)
-;; (bind-key "C-c Q" 'toggle-debug-on-quit)
-
-;; ;;;;; 18.1.3 Entering the Debugger on a Function Call (emacs-lisp/debug.el)
-;; (bind-key "C-c D" 'debug-on-entry)
-;; (bind-key "C-c C" 'cancel-debug-on-entry)
-;; ;; C-M-c は exit-recursive-edit
-
-;; ;;;;; 18.2 Edebug (emacs-lisp/edebug.el)
-;; ;; デバッグ時は以下をtにすると、C-M-x で評価した関数にデバッガが入る。
-;; ;; 個別にデバッグ設定するなら、C-u C-M-x でも良い。
-;; (setq edebug-all-defs nil)
-
-;; ;;;;; 18.5 Profiling
-;; ;; cf. profile.el
-;; (bind-key "C-c M-P s" 'profiler-start)
-;; (bind-key "C-c M-P t" 'profiler-stop)
-;; (bind-key "C-c M-P r" 'profiler-report)
-
-;; ;;;; 19.6 Variables Affecting Output
-;; (setq print-circle t)
-;; (setq eval-expression-print-length nil) ; default 12.
-;; (setq eval-expression-print-level nil)  ; default 4
-
 
 ;;;; 20 Minibuffers
 ;;;;; 20.6.1 Basic Completion Functions
@@ -877,35 +446,208 @@
 (bind-key* "M-o" 'tkw-other-window) ; ggtags.el の navigation/facemenu-keymap と衝突。
 (bind-key "M-O" 'facemenu-keymap)
 
+;;;;; 33.7 Character Sets
+(set-charset-priority 'ascii 'japanese-jisx0208 'latin-jisx0201
+          'katakana-jisx0201 'iso-8859-1 'cp1252 'unicode)
 
+;;;;; 33.10.5 Default Coding Systems
+(setq default-process-coding-system
+      (case system-type ('windows-nt '(cp932 . cp932))
+                        ('darwin (require 'ucs-normalize) '(utf-8-hfs . utf-8))
+                        (t '(undecided . utf-8))))
+(setq selection-coding-system
+      (case system-type ('windows-nt 'cp932)
+                        ('darwin 'utf-8)
+                        (t nil)))
+;; decode-translation-table の設定
+
+;;;;; 33.10.6 Specifying a Coding System for One Operation
+(set-coding-system-priority 'utf-8 'euc-jp 'iso-2022-jp 'cp932)
+
+;;;;; 33.12 Locales
+(setq system-time-locale "C")
+
+;;;;; 38.11 Line Height
+(setq-default line-spacing 1)           ; 行間を2ピクセルあける
+
+;;;;; 38.12 Faces
+;;;;; 38.12.11 Fontsets
+;; フォントセットの設定
+;; SPECS = ((target . fonts) (target . fonts) ...)
+;; TARGET = t ← default for all, nil ← all
+;; 最初から最後に向かってつなげていく。
+;; TARGETのスクリプト名は、international/characters.el を参照。
+;; fonts の最初の要素のフォントを利用する。
+
+;;;;; 38.12.12 Low-Level Font Representation
+
+;; FAMILY-NAME
+;; OPENED-NAME ... XLFD Name
+;; FULL-NAME
+;;                                     +-------+
+;;  font-info                          |bufffer|
+;;  font-family-list                   +---+---+
+;;      |                           font-at|    composition-get-gstring
+;;      v                                  v    font-shape-gstring
+;; +---------+     +-----------+      +-----------+      +-------+
+;; |font-spec+---->|font-entity+----->|font-object+----->|GSTRING|
+;; +---------+     +-----------+      +----+------+      +-------+
+;;         find-font           open-font   |     font-get-glyphs
+;;         list-fonts                      |             +------+
+;;                                         +------------>|glyphs|
+;;                                         |             +------+
+;;                                         |             +---------+
+;;                                         +------------>+font-info|
+;;                                         | query-font  +---------+
+;;                                         |             +----------+
+;;                                         +------------>|variations|
+;;                                 font-variation-glyphs +----------+
+
+;; - font-spec parameters
+;; |---------+------------------------------------------------------------|
+;; | :family |                                                            |
+;; | :width  | `ultra-condensed', `extra-condensed', `condensed',         |
+;; |         | `semi-condensed', `normal', `semi-expanded', `expanded',   |
+;; |         | `extra-expanded', or `ultra-expanded'                      |
+;; | :weight | `ultra-bold', `extra-bold', `bold', `semi-bold', `normal', |
+;; |         | `semi-light', `light', `extra-light', `ultra-light'        |
+;; | :slant  | `italic', `oblique', `normal', `reverse-italic',           |
+;; |         | `reverse-oblique'.                                         |
+;; |---------+------------------------------------------------------------|
+
+;; - Functions with font-spec/entity/object as arguments
+
+;;   fontp/font-info/font-get/font-face-attributes/font-put/font-xlfd-name
+;;   font-match-p
+
+;; - For debugging
+
+;;   font-drive-otf/font-otf-alternates/draw-string
+
+;; - Font Shaping by font Backend
+
+;;   font-shape-gstring
+
+;; - Examples
+
+;;   (font-info (font-spec :family "Hiragino Kaku Gothic ProN"))
+;;   (setq entity (find-font (font-spec :family "Hiragino Kaku Gothic ProN")))
+;;   (setq object (open-font entity))
+;;   (font-face-attributes object)
+;;   (font-get-glyphs object 0 6 "漢字と日本語")
+;;   (font-otf-alternates object ?漢 'aalt)
+;;   (font-variation-glyphs object ?漢)
+;;   (font-shape-gstring)
+;;   (font-get-glyphs object 0 3 [?a ?漢 #x800])
+
+;;;;; 38.13 Fringes
+;; 38.13.2 Fringe Indicators
+;; 空行をフリンジに表示
+(setq-default indicate-empty-lines t)
+
+;;;;; 38.21 Beeping
+(setq visible-bell t)
+;; 警告音もフラッシュも全て無効(警告音が完全に鳴らなくなるので注意)
+;;(setq ring-bell-function 'ignore)
+
+;;; 標準ライブラリ
+;; loadup.el に記述され、デフォルトでEmacsに読み込まれる
+;; ライブラリに関する設定は、上の「標準設定」で行なう。
+
+;;;; dired.el
+(defvar dired-mode-map)
+(defvar dired-actual-switches)
+(with-eval-after-load 'dired
+  (require 'dired-x)
+  (add-hook 'dired-mode-hook (lambda () (setenv "LANG" "C")))
+  ;; diredバッファの自動更新
+  (set-variable 'dired-auto-revert-buffer t)
+  ;; diredのサイズ表示に Kbyte, Mbyte 等の単位を使う。
+  ;; -h :: Kbyte, Mbyte 単位の表示
+  (set-variable 'dired-listing-switches "-alh")
+  ;; Diredでのコピー先ディレクトリの自動推定（２窓ファイラ的動作）
+  (set-variable 'dired-dwim-target t)
+  ;; 再帰的にコピー・削除
+  (set-variable 'dired-recursive-copies 'always)
+  (set-variable 'dired-recursive-deletes 'always)
+  ;; Drag&Drop
+  ;; (setq dired-dnd-protocol-alist nil)
+  ;; GNU ls は、Mac では、
+  ;; - sudo port install coreutils (gls)
+  ;; - sudo port install coreutils +with_default_names (ls)
+  ;; でインストール可能
+  (when (executable-find "gls")
+    (setq insert-directory-program "gls"))
+  ;; dired の sort を拡張する。
+  ;; sorter.el のバグ修正・整理版。
+  (defvar dired-sort-order '("" "t" "S" "X")
+    "-t (時間) -X (拡張子) -S (サイズ) なし (アルファベット順) を切り替える。")
+  (defvar dired-sort-order-position 0)
+  (declare-function dired-sort-other "dired")
+  (defun dired-rotate-sort ()
+    "Rotate dired toggle sorting order by `dired-sort-order'"
+    (interactive)
+    (setq dired-sort-order-position
+          (% (1+ dired-sort-order-position) (length dired-sort-order)))
+    (setq dired-actual-switches
+          (concat dired-listing-switches (elt dired-sort-order
+                                              dired-sort-order-position)))
+    (dired-sort-other dired-actual-switches))
+  (bind-key "s" 'dired-rotate-sort dired-mode-map)
+  ;; diredバッファでC-sした時にファイル名だけにマッチするように
+  (setq dired-isearch-filenames t)
+  )
+
+
+
+
+;; dired のバッファが氾濫しないように，ディレクトリを移動するだけなら
+;; バッファを作らないようにする．
+;;(defvar tkw-dired-before-buffer nil)
+;;(defadvice dired-advertised-find-file
+;;  (before kill-dired-buffer activate)
+;;  (setq tkw-dired-before-buffer (current-buffer)))
+;;(defadvice dired-advertised-find-file
+;;  (after kill-dired-buffer-after activate)
+;;  (when
+;;      (and
+;;       (eq major-mode 'dired-mode)
+;;       (not (string= (buffer-name (current-buffer))
+;;                     (buffer-name tkw-dired-before-buffer))))
+;;    (kill-buffer tkw-dired-before-buffer)))
+;;(defadvice dired-up-directory
+;;  (before kill-up-dired-buffer activate)
+;;  (setq tkw-dired-before-buffer (current-buffer)))
+;;(defadvice dired-up-directory
+;;  (after kill-up-dired-buffer-after activate)
+;;  (when
+;;      (and
+;;       (eq major-mode 'dired-mode)
+;;       (not (string= (buffer-name (current-buffer))
+;;                     (buffer-name tkw-dired-before-buffer))))
+;;    ;;(not (string-match "^[a-z]+:[/]$" (buffer-name tkw-dired-before-buffer))))
+;;    (kill-buffer tkw-dired-before-buffer)))
+
+;; Cygwin 環境では、diredのファイル名はutf-8のため、fopenと整合しない。
+;;(when (file-executable-p "c:/cygwin/bin/ls.exe")
+;;  (setq ls-lisp-use-insert-directory-program t)
+;;  (setq insert-directory-program "c:/cygwin/bin/ls.exe"))
+
+
+;;; Package setup
+
+;;;; ddskk.el
+(global-set-key (kbd "C-x j") 'skk-mode)
+;; to avoid conflict of dired-jump in dired-x.el
+
+;;;; end of init.el
+(message "End of loading init.el.")
 
 ;; ;;;;ここからは、自分で作った混ぜこぜのinit.el
-;; ;; Added by Package.el.  This must come before configurations of
-;; ;; installed packages.  Don't delete this line.  If you don't want it,
-;; ;; just comment it out by adding a semicolon to the start of the line.
-;; ;; You may delete these explanatory comments.
-;; ;; package管理
-
-;; (package-initialize)
-;; (setq package-archives
-;;       '(("gnu" . "http://elpa.gnu.org/packages/")
-;;         ("melpa" . "http://melpa.org/packages/")
-;;         ("org" . "http://orgmode.org/elpa/")))
-;; ;;(package-initialize)
-;; ;;(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-
-;; ;; required packages are...
-;; ;; bind-key, dired-launch
 
 
-;; ;; SKK
-;; (global-set-key (kbd "C-x j") 'skk-mode)
-;; ;; to avoid conflict of dired-jump in dired-x.el
 
 ;; ;; 警告音の代わりに画面フラッシュ
-;; (setq visible-bell t)
-;; ;; 警告音もフラッシュも全て無効(警告音が完全に鳴らなくなるので注意)
-;; ;;(setq ring-bell-function 'ignore)
 
 ;; ;;; recentf.elの設定
 ;; (defmacro with-suppressed-message (&rest body)
@@ -992,12 +734,6 @@
 ;; (require 'wdired)
 ;; (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
 
-;; ;; diredを2つのウィンドウで開いている時に、デフォルトの移動orコピー先をもう一方のdiredで開いているディレクトリにする
-;; (setq dired-dwim-target t)
-;; ;; ディレクトリを再帰的にコピーする
-;; (setq dired-recursive-copies 'always)
-;; ;; diredバッファでC-sした時にファイル名だけにマッチするように
-;; (setq dired-isearch-filenames t)
 ;; ;; ファイルをWindowsの関連付けで開く
 ;; (add-hook 'dired-load-hook (function (lambda ()
 ;;     (define-key dired-mode-map "w" 'dired-open-file)
