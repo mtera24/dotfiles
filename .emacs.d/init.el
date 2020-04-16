@@ -139,31 +139,32 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;#navigation #movecursor
+;;;;; (emacs) 7.2 Changing the Location of Point
+(bind-key "C-x :" 'goto-line) ; M-g g に加えて追加
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;#region
+;;;; (emacs) 11.4 The Mark Ring
+;; C-u C-SPC C-SPC... で繰返しマークをpopできるようにする.
+(setq set-mark-command-repeat-pop t)
+;;;; (emacs) 11.7 Disabling Transient Mark Mode
+(transient-mark-mode t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;#cut-and-paste
+;;;; (emacs) 12 Killing and Moving Text
+;;;;; (emacs) 12.1.2 Killing by Lines
+(setq kill-whole-line t)
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;#under-construction
-
-;; ;;; 標準設定
-;; ;;;; (emacs) 7 Basic
-;; ;;;;; (emacs) 7.1 Inserting Text
-;; ;; `C-q 数字' で文字を入力する際の進数
-;; (setq read-quoted-char-radix 16)
-
-;; ;;;;; (emacs) 7.2 Changing the Location of Point
-;; (bind-key "C-x :" 'goto-line) ; M-g g に加えて追加
-
-;; ;;;; (emacs) 8 Minibuffers
-;; ;; ミニバッファの変化が激しいと思うときは、'grow-onlyに。
-;; (setq resize-mini-windows 'grow-only)
-
-;; ;;;; (emacs) 11.4 The Mark Ring
-;; ;; C-u C-SPC C-SPC... で繰返しマークをpopできるようにする.
-;; (setq set-mark-command-repeat-pop t)
-
-;; ;;;; (emacs) 11.7 Disabling Transient Mark Mode
-;; (transient-mark-mode t)
-
-;; ;;;; (emacs) 12 Killing and Moving Text
-;; ;;;;; (emacs) 12.1.2 Killing by Lines
-;; (setq kill-whole-line t)
 
 ;; ;;;;; (emacs) 12.3.2 Cut and Paste with Other Window Applications
 ;; ;; VNC等で動きが遅くならないための工夫
@@ -1015,3 +1016,28 @@
 ;; ;;
 ;; (setq desktop-save-mode t)
 ;; (setq desktop-globals-to-save kill-ring)
+
+;; (custom-set-variables
+;;  ;; custom-set-variables was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(package-selected-packages (quote (use-package recentf-ext bind-key))))
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  )
+
+;; ;;;; (emacs) 8 Minibuffers
+;; ;; ミニバッファの変化が激しいと思うときは、'grow-onlyに。
+;; (setq resize-mini-windows 'grow-only)
+
+;; ;;; 標準設定
+;; ;;;; (emacs) 7 Basic
+;; ;;;;; (emacs) 7.1 Inserting Text
+;; ;; `C-q 数字' で文字を入力する際の進数
+;; (setq read-quoted-char-radix 16)
+
+
