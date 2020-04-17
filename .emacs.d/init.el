@@ -262,6 +262,53 @@
 ;; ;  :config
 ;; ;  (setq package-archive-upload-base (locate-user-emacs-file "local-packages")))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;#dired
+;;;; dired.el
+(defvar dired-mode-map)
+(defvar dired-actual-switches)
+(with-eval-after-load 'dired
+  (require 'dired-x)
+  (add-hook 'dired-mode-hook (lambda () (setenv "LANG" "C")))
+  ;; diredバッファの自動更新
+  (set-variable 'dired-auto-revert-buffer t)
+  ;; diredのサイズ表示に Kbyte, Mbyte 等の単位を使う。
+  ;; -h :: Kbyte, Mbyte 単位の表示
+  (set-variable 'dired-listing-switches "-alh")
+  ;; Diredでのコピー先ディレクトリの自動推定（２窓ファイラ的動作）
+  (set-variable 'dired-dwim-target t)
+  ;; 再帰的にコピー・削除
+  (set-variable 'dired-recursive-copies 'always)
+  (set-variable 'dired-recursive-deletes 'always)
+  ;; Drag&Drop
+  ;; (setq dired-dnd-protocol-alist nil)
+  ;; GNU ls は、Mac では、
+  ;; - sudo port install coreutils (gls)
+  ;; - sudo port install coreutils +with_default_names (ls)
+  ;; でインストール可能
+  (when (executable-find "gls")
+    (setq insert-directory-program "gls"))
+  ;; dired の sort を拡張する。
+  ;; sorter.el のバグ修正・整理版。
+  (defvar dired-sort-order '("" "t" "S" "X")
+    "-t (時間) -X (拡張子) -S (サイズ) なし (アルファベット順) を切り替える。")
+  (defvar dired-sort-order-position 0)
+  (declare-function dired-sort-other "dired")
+  (defun dired-rotate-sort ()
+    "Rotate dired toggle sorting order by `dired-sort-order'"
+    (interactive)
+    (setq dired-sort-order-position
+          (% (1+ dired-sort-order-position) (length dired-sort-order)))
+    (setq dired-actual-switches
+          (concat dired-listing-switches (elt dired-sort-order
+                                              dired-sort-order-position)))
+    (dired-sort-other dired-actual-switches))
+  (bind-key "s" 'dired-rotate-sort dired-mode-map)
+  ;; diredバッファでC-sした時にファイル名だけにマッチするように
+  (setq dired-isearch-filenames t)
+  )
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -527,50 +574,6 @@
 ;; ;;; 標準ライブラリ
 ;; ;; loadup.el に記述され、デフォルトでEmacsに読み込まれる
 ;; ;; ライブラリに関する設定は、上の「標準設定」で行なう。
-
-;; ;;;; dired.el
-;; (defvar dired-mode-map)
-;; (defvar dired-actual-switches)
-;; (with-eval-after-load 'dired
-;;   (require 'dired-x)
-;;   (add-hook 'dired-mode-hook (lambda () (setenv "LANG" "C")))
-;;   ;; diredバッファの自動更新
-;;   (set-variable 'dired-auto-revert-buffer t)
-;;   ;; diredのサイズ表示に Kbyte, Mbyte 等の単位を使う。
-;;   ;; -h :: Kbyte, Mbyte 単位の表示
-;;   (set-variable 'dired-listing-switches "-alh")
-;;   ;; Diredでのコピー先ディレクトリの自動推定（２窓ファイラ的動作）
-;;   (set-variable 'dired-dwim-target t)
-;;   ;; 再帰的にコピー・削除
-;;   (set-variable 'dired-recursive-copies 'always)
-;;   (set-variable 'dired-recursive-deletes 'always)
-;;   ;; Drag&Drop
-;;   ;; (setq dired-dnd-protocol-alist nil)
-;;   ;; GNU ls は、Mac では、
-;;   ;; - sudo port install coreutils (gls)
-;;   ;; - sudo port install coreutils +with_default_names (ls)
-;;   ;; でインストール可能
-;;   (when (executable-find "gls")
-;;     (setq insert-directory-program "gls"))
-;;   ;; dired の sort を拡張する。
-;;   ;; sorter.el のバグ修正・整理版。
-;;   (defvar dired-sort-order '("" "t" "S" "X")
-;;     "-t (時間) -X (拡張子) -S (サイズ) なし (アルファベット順) を切り替える。")
-;;   (defvar dired-sort-order-position 0)
-;;   (declare-function dired-sort-other "dired")
-;;   (defun dired-rotate-sort ()
-;;     "Rotate dired toggle sorting order by `dired-sort-order'"
-;;     (interactive)
-;;     (setq dired-sort-order-position
-;;           (% (1+ dired-sort-order-position) (length dired-sort-order)))
-;;     (setq dired-actual-switches
-;;           (concat dired-listing-switches (elt dired-sort-order
-;;                                               dired-sort-order-position)))
-;;     (dired-sort-other dired-actual-switches))
-;;   (bind-key "s" 'dired-rotate-sort dired-mode-map)
-;;   ;; diredバッファでC-sした時にファイル名だけにマッチするように
-;;   (setq dired-isearch-filenames t)
-;;   )
 
 
 
