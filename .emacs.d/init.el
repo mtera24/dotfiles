@@ -128,6 +128,49 @@
  ;;ダークモード
  (load-theme 'tango-dark t)
 
+
+
+
+ ;; フォント設定(WSL用)
+;; デフォルト フォント
+(set-face-attribute 'default nil :family "Migu 1M" :height 120)
+;; プロポーショナル フォント
+(set-face-attribute 'variable-pitch nil :family "Migu 1M" :height 120)
+;; 等幅フォント
+(set-face-attribute 'fixed-pitch nil :family "Migu 1M" :height 120)
+;; ツールチップ表示フォント
+(set-face-attribute 'tooltip nil :family "Migu 1M" :height 90)
+
+;;;; (emacs) 14 Controlling the Display 
+;;;;; (emacs) 14.16 Useless Whitespace
+;; 行末の空白を表示
+(setq-default show-trailing-whitespace nil)
+(defun turn-on-show-trailing-whitespace  () (interactive) (setq show-trailing-whitespace t))
+(defun turn-off-show-trailing-whitespace () (interactive) (setq show-trailing-whitespace nil))
+(defun toggle-show-trailing-whitespace () (interactive) (callf null show-trailing-whitespace))
+(add-hook 'prog-mode-hook 'turn-on-show-trailing-whitespace)
+(add-hook 'org-mode-hook 'turn-on-show-trailing-whitespace)
+
+;;;;; (emacs) 21.15 Tool Bars
+(when (functionp 'tool-bar-mode) (tool-bar-mode -1))
+
+;; line-number display
+(line-number-mode t)
+(column-number-mode t)
+
+;; #time.el
+(setq display-time-day-and-date t)
+(set-variable 'display-time-24hr-format t)
+(set-variable 'display-time-string-forms
+              '(month "/" day
+                      " " 24-hours ":" minutes ;; ":" seconds
+                      (if mail " Mail" "")))
+(display-time)
+
+;;;;; (emacs) 14.20 Displaying the Cursor
+(blink-cursor-mode 0)
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;#control-appearance
@@ -136,6 +179,13 @@
 ;; + 連打→拡大
 ;; - 連打→縮小
 ;; 0 → 元に戻す
+
+;;;;; (emacs) 14.21 Line Truncation
+(bind-key "C-c t" 'toggle-truncate-lines)
+
+;; ;;;;; (emacs) 14.22 Visual Line Mode
+;; ;;(global-visual-line-mode t)
+;; tukawa nai. kirikae takereba, M-x global-visual-line-mode de.
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -158,155 +208,38 @@
 ;;;;; (emacs) 12.1.2 Killing by Lines
 (setq kill-whole-line t)
 
-
-
-
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;#search
+;;;; (emacs) 15.1 Incremental Search
+(setq lazy-highlight-initial-delay 0) ; isearch のハイライト反応を良くする。
+(bind-key "C-k" 'isearch-edit-string isearch-mode-map)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;#under-construction
+;;;#language
+;;;; (emacs) 22 International
+;;;;; (emacs) 22.2 Language Environments
+;;coding関係の設定の前にこれを行う。
+(set-language-environment "Japanese")
 
-;; ;;;;; (emacs) 12.3.2 Cut and Paste with Other Window Applications
-;; ;; VNC等で動きが遅くならないための工夫
-;; (setq select-active-regions nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;#coding-system
+;;;;; (emacs) 22.6 Recognizing Coding Systems
+(prefer-coding-system
+ (cond ((equal system-type 'windows-nt) 'utf-8-dos)
+       (t 'utf-8)))
 
-;; ;;;; (emacs) 14 Controlling the Display
-;; ;;;;; (emacs) 14.16 Useless Whitespace
-;; ;; 行末の空白を表示
-;; (setq-default show-trailing-whitespace nil)
-;; (defun turn-on-show-trailing-whitespace  () (interactive) (setq show-trailing-whitespace t))
-;; (defun turn-off-show-trailing-whitespace () (interactive) (setq show-trailing-whitespace nil))
-;; (defun toggle-show-trailing-whitespace () (interactive) (callf null show-trailing-whitespace))
-;; (add-hook 'prog-mode-hook 'turn-on-show-trailing-whitespace)
-;; (add-hook 'org-mode-hook 'turn-on-show-trailing-whitespace)
-;; ;; フレームの横幅が一定以下になれば自動的に truncate-window-mode にする。
-;; ;; nil の場合はこの機能を無効にする。（デフォルトは50）
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;#comment
+;;;; (emacs) 26.5 Comments
+(bind-key "C-c ;" 'comment-region)
 
-;; ;;;;; (emacs) 14.18 Optional Mode Line Features
-;; (setq line-number-display-limit 10000000)
-;; (setq line-number-display-limit-width 1000)
-
-;; (line-number-mode t)
-;; (column-number-mode t)
-
-;; ;; time.el
-;; (setq display-time-day-and-date t)
-;; (set-variable 'display-time-24hr-format t)
-;; (set-variable 'display-time-string-forms
-;;               '(month "/" day
-;;                       " " 24-hours ":" minutes ;; ":" seconds
-;;                       (if mail " Mail" "")))
-;; (display-time)
-
-;; ;;;;; (emacs) 14.20 Displaying the Cursor
-;; (blink-cursor-mode 0)
-
-;; ;;;;; (emacs) 14.21 Line Truncation
-;; (bind-key "C-c t" 'toggle-truncate-lines)
-
-;; ;;;;; (emacs) 14.22 Visual Line Mode
-;; ;;(global-visual-line-mode t)
-
-;; ;;;; (emacs) 15.1 Incremental Search
-;; (setq lazy-highlight-initial-delay 0) ; isearch のハイライト反応を良くする。
-;; (bind-key "C-k" 'isearch-edit-string isearch-mode-map)
-
-;; ;;;; (emacs) 18.2 Visiting Files
-;; (when (require 'openwith nil t)
-;;   ;; openwith-file-handler でデバッガに落ちないようにする。
-;;   (defadvice openwith-file-handler (around tkw-openwith-handler activate)
-;;     (let (debug-on-error)
-;;       ad-do-it))
-;;   ;; ディレクトリを開こうとする場合は、OSのファイルブラウザで開けるようにする。
-;;   (defadvice find-file (around tkw-find-file activate)
-;;     "Open directory by external application if its name ends with /."
-;;     (if (and (file-directory-p (ad-get-arg 0))
-;;              (string-match "/$" (ad-get-arg 0))
-;;              (y-or-n-p (concat "Open " (ad-get-arg 0)
-;;                                " in File Browser? ")))
-;;         ;; openwith は、強制エラーを発生させるので、 debug-on-error を
-;;         ;; nil にして、デバッガに入るのを抑止する。
-;;         (cond ((eq system-type 'windows-nt)
-;;                (openwith-open-windows (list (ad-get-arg 0))))
-;;               ((eq system-type 'gnu/linux)
-;;                (openwith-open-unix "nautilus" (list (ad-get-arg 0))))
-;;               (t
-;;                (openwith-open-unix "open" (list (ad-get-arg 0)))))
-;;       ad-do-it)))
-;; ;; warn only if file size is more than 100Mbyte.
-;; (setq large-file-warning-threshold 100000000)
-
-;; ;;;; (emacs) 20 Windows
-;; (bind-key "A-M-n" 'enlarge-window)
-;; (bind-key "A-M-p" 'shrink-window)
-;; (bind-key "A-M-f" 'enlarge-window-horizontally)
-;; (bind-key "A-M-b" 'shrink-window-horizontally)
-;; ;;(bind-key "<C-right>" (command (scroll-left 8)))
-;; ;;(bind-key "<C-left>" (command (scroll-right 8)))
-;; ;;(bind-key "<M-up>" (command (scroll-up 1)))
-;; ;;(bind-key "<M-down>" (command (scroll-down 1)))
-;; ;;(bind-key "<C-right>" (command (scroll-left 1)))
-;; ;;(bind-key "<C-left>" (command (scroll-right 1)))
-;; ;; 現在のウィンドウを垂直方向に伸ばす。まず、下にウィンドウがあれば、
-;; ;; それを消して、無ければ、上を消して、上もなければ、
-;; ;; delete-other-windowsする。
-;; (defun tkw-enlarge-window-vertically ()
-;;  (command
-;;    (let ((current-tl  (car (window-edges (selected-window))))
-;;          (next-tl     (car (window-edges (next-window))))
-;;          (previous-tl (car (window-edges (previous-window)))))
-;;      (cond ((= current-tl next-tl)
-;;             (other-window 1) (delete-window)
-;;             (other-window -1))
-;;            ((= current-tl previous-tl)
-;;             (other-window -1) (delete-window))
-;;            (t (delete-other-windows))))))
-;; (bind-key "C-x 9" 'tkw-enlarge-window-vertically)
-;; ;; 上下スクロールする際に、カーソルが追随するかどうかを切替える。
-
-;; ;;;; (emacs) 21 Frames and Graphical Displays
-
-;; ;;;;; (emacs) 21.7 Frame Commands
-;; (bind-key "A-M-o" 'other-frame)
-
-;; ;;;;; (emacs) 21.15 Tool Bars
-;; (when (functionp 'tool-bar-mode) (tool-bar-mode -1))
-
-;; ;;;; (emacs) 22 International
-;; ;;;;; (emacs) 22.2 Language Environments
-;; ;; coding関係の設定の前にこれを行う。
-;; ;;(set-language-environment "Japanese")
-
-;; ;;;;; (emacs) 22.6 Recognizing Coding Systems
-;; (prefer-coding-system
-;;  (cond ((equal system-type 'windows-nt) 'utf-8-dos)
-;;        (t 'utf-8)))
-
-;; ;;;; (emacs) 25.1 Words
-;; (bind-key "C-M-h" 'backward-kill-word) ; 単語をまとめてBS。
-
-;; ;;;; (emacs) 25.8 Outline Mode
-
-;; ;;;; (emacs) 26.5 Comments
-;; (bind-key "C-c ;" 'comment-region)
-
-;; ;;;; (emacs) 32.7 Mail-Composition Methods
-;; (setq mail-user-agent 'gnus-user-agent) ; Gnusをメールに使用する。
-
-;; ;;;; (emacs) 36 Running shell commands from Emacs
-;; ;; SHELL環境変数が使用される。
-;; ;; CYGWIN 環境では、SHELL環境変数が "/bin/bash" などだと、Emacsでは解釈できない。
-;; (if (equal window-system 'w32)
-;;     (if (executable-find "zsh")
-;;         (progn
-;;           (set-variable 'shell-file-name "zsh")
-;;           (set-variable 'explicit-shell-file-name "zsh"))
-;;       (message "Warning! zsh not found!")))
-
-;; ;;;; (emacs) 47.1 The Package Menu Buffer
-;; ;;;;; emacs-lisp/packages.el
-;; ;; (bind-key "C-c P" 'list-packages)
-
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;#package
 ;; ;;;;; emacs-lisp/package-x.el
 ;; ;; package-upload-buffer は tarファイルでも指定可能。
 ;; ;; 自作ツールはパッケージ化すると、autoloadなどが自動化される。
@@ -329,7 +262,10 @@
 ;; ;  :config
 ;; ;  (setq package-archive-upload-base (locate-user-emacs-file "local-packages")))
 
-;; ;;;; (emacs) 48 Customization
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;#under-construction
 
 ;; ;;;; (emacs) 50.1 If <DEL> Fails to Delete
 ;; (normal-erase-is-backspace-mode 1)
@@ -1041,3 +977,113 @@
 ;; (setq read-quoted-char-radix 16)
 
 
+;; ;;;;; (emacs) 12.3.2 Cut and Paste with Other Window Applications
+;; ;; VNC等で動きが遅くならないための工夫
+;; (setq select-active-regions nil)
+
+;; ;;;;; (emacs) 14.18 Optional Mode Line Features
+;; (setq line-number-display-limit 10000000)
+;; (setq line-number-display-limit-width 1000)
+
+;; ;; フレームの横幅が一定以下になれば自動的に truncate-window-mode にする。
+;; ;; nil の場合はこの機能を無効にする。（デフォルトは50）
+
+;; ;;;;; (emacs) 14.22 Visual Line Mode
+;; ;;(global-visual-line-mode t)
+
+;; ;;;; (emacs) 18.2 Visiting Files
+;; (when (require 'openwith nil t)
+;;   ;; openwith-file-handler でデバッガに落ちないようにする。
+;;   (defadvice openwith-file-handler (around tkw-openwith-handler activate)
+;;     (let (debug-on-error)
+;;       ad-do-it))
+;;   ;; ディレクトリを開こうとする場合は、OSのファイルブラウザで開けるようにする。
+;;   (defadvice find-file (around tkw-find-file activate)
+;;     "Open directory by external application if its name ends with /."
+;;     (if (and (file-directory-p (ad-get-arg 0))
+;;              (string-match "/$" (ad-get-arg 0))
+;;              (y-or-n-p (concat "Open " (ad-get-arg 0)
+;;                                " in File Browser? ")))
+;;         ;; openwith は、強制エラーを発生させるので、 debug-on-error を
+;;         ;; nil にして、デバッガに入るのを抑止する。
+;;         (cond ((eq system-type 'windows-nt)
+;;                (openwith-open-windows (list (ad-get-arg 0))))
+;;               ((eq system-type 'gnu/linux)
+;;                (openwith-open-unix "nautilus" (list (ad-get-arg 0))))
+;;               (t
+;;                (openwith-open-unix "open" (list (ad-get-arg 0)))))
+;;       ad-do-it)))
+;; ;; warn only if file size is more than 100Mbyte.
+;; (setq large-file-warning-threshold 100000000)
+
+;; (custom-set-variables
+;;  ;; custom-set-variables was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(package-selected-packages
+;;    (quote
+;;     (ddskk-posframe use-package recentf-ext pallet init-loader evil dired-open ddskk))))
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  )
+
+;; ;;;; (emacs) 20 Windows
+;; (bind-key "A-M-n" 'enlarge-window)
+;; (bind-key "A-M-p" 'shrink-window)
+;; (bind-key "A-M-f" 'enlarge-window-horizontally)
+;; (bind-key "A-M-b" 'shrink-window-horizontally)
+;; ;;(bind-key "<C-right>" (command (scroll-left 8)))
+;; ;;(bind-key "<C-left>" (command (scroll-right 8)))
+;; ;;(bind-key "<M-up>" (command (scroll-up 1)))
+;; ;;(bind-key "<M-down>" (command (scroll-down 1)))
+;; ;;(bind-key "<C-right>" (command (scroll-left 1)))
+;; ;;(bind-key "<C-left>" (command (scroll-right 1)))
+;; ;; 現在のウィンドウを垂直方向に伸ばす。まず、下にウィンドウがあれば、
+;; ;; それを消して、無ければ、上を消して、上もなければ、
+;; ;; delete-other-windowsする。
+;; (defun tkw-enlarge-window-vertically ()
+;;  (command
+;;    (let ((current-tl  (car (window-edges (selected-window))))
+;;          (next-tl     (car (window-edges (next-window))))
+;;          (previous-tl (car (window-edges (previous-window)))))
+;;      (cond ((= current-tl next-tl)
+;;             (other-window 1) (delete-window)
+;;             (other-window -1))
+;;            ((= current-tl previous-tl)
+;;             (other-window -1) (delete-window))
+;;            (t (delete-other-windows))))))
+;; (bind-key "C-x 9" 'tkw-enlarge-window-vertically)
+;; ;; 上下スクロールする際に、カーソルが追随するかどうかを切替える。
+
+;; ;;;; (emacs) 21 Frames and Graphical Displays
+
+;; ;;;;; (emacs) 21.7 Frame Commands
+;; (bind-key "A-M-o" 'other-frame)
+
+;; ;;;; (emacs) 25.1 Words
+;; (bind-key "C-M-h" 'backward-kill-word) ; 単語をまとめてBS。
+
+;; ;;;; (emacs) 25.8 Outline Mode
+
+;; ;;;; (emacs) 32.7 Mail-Composition Methods
+;; (setq mail-user-agent 'gnus-user-agent) ; Gnusをメールに使用する。
+
+;; ;;;; (emacs) 36 Running shell commands from Emacs
+;; ;; SHELL環境変数が使用される。
+;; ;; CYGWIN 環境では、SHELL環境変数が "/bin/bash" などだと、Emacsでは解釈できない。
+;; (if (equal window-system 'w32)
+;;     (if (executable-find "zsh")
+;;         (progn
+;;           (set-variable 'shell-file-name "zsh")
+;;           (set-variable 'explicit-shell-file-name "zsh"))
+;;       (message "Warning! zsh not found!")))
+
+;; ;;;; (emacs) 47.1 The Package Menu Buffer
+;; ;;;;; emacs-lisp/packages.el
+;; ;; (bind-key "C-c P" 'list-packages)
+
+;; ;;;; (emacs) 48 Customization
