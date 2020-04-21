@@ -308,7 +308,13 @@
   ;; diredバッファでC-sした時にファイル名だけにマッチするように
   (setq dired-isearch-filenames t)
   )
-;; ファイルをWindowsの関連付けで開く
+;; ファイルをWindowsの関連付けで開く(WSL だけ)
+;; ただしこの機能を実行するには、下記のようなシェルスクリプトを
+;; "open-in-windows"の名前で作り、PATHの通ったところに置いておくこと。
+;; ===open-in-windows
+;; #!/usr/bin/zsh
+;; explorer.exe `wslpath -w  $1`
+
 (add-hook 'dired-load-hook (function (lambda ()
                        (define-key dired-mode-map "w" 'dired-open-file)
                        )))
