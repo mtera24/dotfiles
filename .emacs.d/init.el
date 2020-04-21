@@ -308,6 +308,26 @@
   ;; diredバッファでC-sした時にファイル名だけにマッチするように
   (setq dired-isearch-filenames t)
   )
+;; ファイルをWindowsの関連付けで開く
+(add-hook 'dired-load-hook (function (lambda ()
+                       (define-key dired-mode-map "w" 'dired-open-file)
+                       )))
+(defun dired-open-file ()
+  "In dired, open the file named on this line."
+  (interactive)
+  (message "WindowsOpening %s..." (dired-get-filename))
+  (shell-command (mapconcat #'shell-quote-argument
+                (list "open-in-windows" (dired-get-filename))
+                " "))
+  (message "WindowsOpening %s done" (dired-get-filename))
+  )
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;#SKK
+;;;; ddskk.el
+(global-set-key (kbd "C-x j") 'skk-mode)
+;; to avoid conflict of dired-jump in dired-x.el
 
 
 
@@ -613,9 +633,6 @@
 
 ;; ;;; Package setup
 
-;; ;;;; ddskk.el
-;; (global-set-key (kbd "C-x j") 'skk-mode)
-;; ;; to avoid conflict of dired-jump in dired-x.el
 
 ;; ;;;; end of init.el
 ;; (message "End of loading init.el.")
