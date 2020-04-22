@@ -328,6 +328,11 @@
   (message "WindowsOpening %s done" (dired-get-filename))
   )
 
+;; r key to wdired
+(require 'wdired)
+(define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;#SKK
@@ -729,10 +734,6 @@
 ;;           ("L" . dired-open-file-other-window)))
 
 ;; (bind-key "M-." 'find-file-current-dir)
-
-;; ;; r key to wdired
-;; (require 'wdired)
-;; (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
 
 ;; ;; ファイルをWindowsの関連付けで開く
 ;; (add-hook 'dired-load-hook (function (lambda ()
