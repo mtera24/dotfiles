@@ -308,6 +308,12 @@
   ;; diredバッファでC-sした時にファイル名だけにマッチするように
   (setq dired-isearch-filenames t)
   )
+
+;; hide details at startup
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)
+;; sort by update time at startup
+(setq dired-listing-switches "-alth")
+
 ;; ファイルをWindowsの関連付けで開く(WSL だけ)
 ;; ただしこの機能を実行するには、下記のようなシェルスクリプトを
 ;; "open-in-windows"の名前で作り、PATHの通ったところに置いておくこと。
@@ -327,6 +333,83 @@
                 " "))
   (message "WindowsOpening %s done" (dired-get-filename))
   )
+
+;; #dired #key-bind
+
+;; dired のバッファが氾濫しないように，ディレクトリを移動するだけなら
+;; バッファを作らないようにする．
+(defvar tkw-dired-before-buffer nil)
+(defadvice dired-advertised-find-file
+ (before kill-dired-buffer activate)
+ (setq tkw-dired-before-buffer (current-buffer)))
+(defadvice dired-advertised-find-file
+ (after kill-dired-buffer-after activate)
+ (when
+     (and
+      (eq major-mode 'dired-mode)
+      (not (string= (buffer-name (current-buffer))
+                    (buffer-name tkw-dired-before-buffer))))
+   (kill-buffer tkw-dired-before-buffer)))
+(defadvice dired-up-directory
+ (before kill-up-dired-buffer activate)
+ (setq tkw-dired-before-buffer (current-buffer)))
+(defadvice dired-up-directory
+ (after kill-up-dired-buffer-after activate)
+ (when
+     (and
+      (eq major-mode 'dired-mode)
+      (not (string= (buffer-name (current-buffer))
+                    (buffer-name tkw-dired-before-buffer))))
+   ;;(not (string-match "^[a-z]+:[/]$" (buffer-name tkw-dired-before-buffer))))
+   (kill-buffer tkw-dired-before-buffer)))
+
+;; open current-directory
+(defun find-file-current-dir ()
+  "Find-file current directory"
+  (interactive)
+  (find-file default-directory))
+;; benri kansu
+   (defun kill-current-buffer-and/or-dired-open-file ()
+    "In Dired, dired-open-file for a file. For a directory, dired-find-file and
+kill previously selected buffer."
+    (interactive)
+    (if (file-directory-p (dired-get-file-for-visit))
+        (dired-find-alternate-file)
+      (dired-open-file)))
+
+  (defun kill-current-buffer-and-dired-up-directory (&optional other-window)
+    "In Dired, dired-up-directory and kill previously selected buffer."
+    (interactive "P")
+    (let ((b (current-buffer)))
+      (dired-up-directory other-window)
+      (kill-buffer b)))
+
+  (defun dired-open-file-other-window ()
+    "In Dired, open file on other-window and select previously selected buffer."
+    (interactive)
+    (let ((cur-buf (current-buffer)) (tgt-buf (dired-open-file)))
+      (switch-to-buffer cur-buf)
+      (when tgt-buf
+        (with-selected-window (next-window)
+          (switch-to-buffer tgt-buf)))))
+
+  (defun dired-up-directory-other-window ()
+    "In Dired, dired-up-directory on other-window"
+    (interactive)
+    (dired-up-directory t))
+
+;; change key-bind of dired to vim-like
+(with-eval-after-load 'dired
+ (bind-keys :map dired-mode-map
+          ("j" . dired-next-line)
+          ("k" . dired-previous-line)
+          ("h" . kill-current-buffer-and-dired-up-directory)
+          ("l" . kill-current-buffer-and/or-dired-open-file)
+          ("f" . kill-current-buffer-and/or-dired-open-file)
+          ("H" . dired-up-directory-other-window)
+          ("L" . dired-open-file-other-window)))
+
+(bind-key "M-." 'find-file-current-dir)
 
 ;; r key to wdired
 (require 'wdired)
@@ -609,33 +692,6 @@
 
 
 
-;; ;; dired のバッファが氾濫しないように，ディレクトリを移動するだけなら
-;; ;; バッファを作らないようにする．
-;; ;;(defvar tkw-dired-before-buffer nil)
-;; ;;(defadvice dired-advertised-find-file
-;; ;;  (before kill-dired-buffer activate)
-;; ;;  (setq tkw-dired-before-buffer (current-buffer)))
-;; ;;(defadvice dired-advertised-find-file
-;; ;;  (after kill-dired-buffer-after activate)
-;; ;;  (when
-;; ;;      (and
-;; ;;       (eq major-mode 'dired-mode)
-;; ;;       (not (string= (buffer-name (current-buffer))
-;; ;;                     (buffer-name tkw-dired-before-buffer))))
-;; ;;    (kill-buffer tkw-dired-before-buffer)))
-;; ;;(defadvice dired-up-directory
-;; ;;  (before kill-up-dired-buffer activate)
-;; ;;  (setq tkw-dired-before-buffer (current-buffer)))
-;; ;;(defadvice dired-up-directory
-;; ;;  (after kill-up-dired-buffer-after activate)
-;; ;;  (when
-;; ;;      (and
-;; ;;       (eq major-mode 'dired-mode)
-;; ;;       (not (string= (buffer-name (current-buffer))
-;; ;;                     (buffer-name tkw-dired-before-buffer))))
-;; ;;    ;;(not (string-match "^[a-z]+:[/]$" (buffer-name tkw-dired-before-buffer))))
-;; ;;    (kill-buffer tkw-dired-before-buffer)))
-
 ;; ;; Cygwin 環境では、diredのファイル名はutf-8のため、fopenと整合しない。
 ;; ;;(when (file-executable-p "c:/cygwin/bin/ls.exe")
 ;; ;;  (setq ls-lisp-use-insert-directory-program t)
@@ -682,58 +738,7 @@
 
 
 ;; ;; dired関連の設定
-;; ;; open current-directory
-;; (defun find-file-current-dir ()
-;;   "Find-file current directory"
-;;   (interactive)
-;;   (find-file default-directory))
-;; ;; benri kansu
-;;    (defun kill-current-buffer-and/or-dired-open-file ()
-;;     "In Dired, dired-open-file for a file. For a directory, dired-find-file and
-;; kill previously selected buffer."
-;;     (interactive)
-;;     (if (file-directory-p (dired-get-file-for-visit))
-;;         (dired-find-alternate-file)
-;;       (dired-open-file)))
 
-;;   (defun kill-current-buffer-and-dired-up-directory (&optional other-window)
-;;     "In Dired, dired-up-directory and kill previously selected buffer."
-;;     (interactive "P")
-;;     (let ((b (current-buffer)))
-;;       (dired-up-directory other-window)
-;;       (kill-buffer b)))
-
-;;   (defun dired-open-file-other-window ()
-;;     "In Dired, open file on other-window and select previously selected buffer."
-;;     (interactive)
-;;     (let ((cur-buf (current-buffer)) (tgt-buf (dired-open-file)))
-;;       (switch-to-buffer cur-buf)
-;;       (when tgt-buf
-;;         (with-selected-window (next-window)
-;;           (switch-to-buffer tgt-buf)))))
-
-;;   (defun dired-up-directory-other-window ()
-;;     "In Dired, dired-up-directory on other-window"
-;;     (interactive)
-;;     (dired-up-directory t))
-
-;; ;; hide details at startup
-;; (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-;; ;; sort by update time at startup
-;; (setq dired-listing-switches "-alth")
-
-;; ;; change key-bind of dired to vim-like
-;; (with-eval-after-load 'dired
-;;  (bind-keys :map dired-mode-map
-;;           ("j" . dired-next-line)
-;;           ("k" . dired-previous-line)
-;;           ("h" . kill-current-buffer-and-dired-up-directory)
-;;           ("l" . kill-current-buffer-and/or-dired-open-file)
-;;           ("f" . kill-current-buffer-and/or-dired-open-file)
-;;           ("H" . dired-up-directory-other-window)
-;;           ("L" . dired-open-file-other-window)))
-
-;; (bind-key "M-." 'find-file-current-dir)
 
 ;; ;; ファイルをWindowsの関連付けで開く
 ;; (add-hook 'dired-load-hook (function (lambda ()
