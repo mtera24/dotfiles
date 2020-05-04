@@ -431,7 +431,6 @@ kill previously selected buffer."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-<<<<<<< HEAD
 ;;;#dashboard
 (use-package dashboard
   :ensure t
@@ -442,7 +441,6 @@ kill previously selected buffer."
   (dashboard-setup-startup-hook)
   )
 
-=======
 ;; #recentf
 ;;; recentf.elの設定
 (defmacro with-suppressed-message (&rest body)
@@ -464,7 +462,6 @@ kill previously selected buffer."
 (global-set-key (kbd "C-c o") 'recentf-open-files)
 
 ;;;#Todo
->>>>>>> d51aae1105f625715eafc17d2804f0d4df0c774f
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
