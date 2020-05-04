@@ -436,8 +436,8 @@ kill previously selected buffer."
   :ensure t
   :config
   (setq dashboard-items '((recents . 5)
-                          (bookmarks . 5)
-                          (projects . 5)))
+                          (bookmarks . 5)))
+;;                          (projects . 5)))
   (dashboard-setup-startup-hook)
   )
 
