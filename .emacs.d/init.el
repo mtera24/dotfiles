@@ -99,6 +99,12 @@
 ;; 後の startup.el におけるオプション認識エラーを防止
 (add-to-list 'command-switch-alist '("--qq" . (lambda (switch) nil)))
 
+;;(eval-when-compile (require 'use-package))
+;;(require 'diminish)    ;; if you use :diminish
+;;(require 'bind-key)    ;; if you use any :bind variant
+(setq use-package-verbose t)
+(setq use-package-minimum-reported-time 0.001)
+
 ;;;;; 形式的宣言
 (use-package use-package :no-require t :ensure t :defer t)
 
@@ -425,6 +431,7 @@ kill previously selected buffer."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+<<<<<<< HEAD
 ;;;#dashboard
 (use-package dashboard
   :ensure t
@@ -435,6 +442,29 @@ kill previously selected buffer."
   (dashboard-setup-startup-hook)
   )
 
+=======
+;; #recentf
+;;; recentf.elの設定
+(defmacro with-suppressed-message (&rest body)
+  "Suppress new messages temporarily in the echo area and the `*Messages*' buffer while BODY is evaluated."
+  (declare (indent 0))
+  (let ((message-log-max nil))
+    `(with-temp-message (or (current-message) "") ,@body)))
+
+(use-package recentf)
+(setq recentf-save-file "~/.emacs.d/.recentf")
+(setq recentf-max-saved-items 1000)            ;; recentf に保存するファイルの数
+(setq recentf-exclude '(".recentf"))           ;; .recentf自体は含まない
+;;(setq recentf-auto-cleanup 'never)             ;; 保存する内容を整理
+(run-with-idle-timer 30 t '(lambda ()          ;; 30秒ごとに .recentf を保存
+   (with-suppressed-message (recentf-save-list))))
+(require 'recentf-ext)
+
+;; キーバインド
+(global-set-key (kbd "C-c o") 'recentf-open-files)
+
+;;;#Todo
+>>>>>>> d51aae1105f625715eafc17d2804f0d4df0c774f
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -725,24 +755,6 @@ kill previously selected buffer."
 
 ;; ;; 警告音の代わりに画面フラッシュ
 
-;; ;;; recentf.elの設定
-;; (defmacro with-suppressed-message (&rest body)
-;;   "Suppress new messages temporarily in the echo area and the `*Messages*' buffer while BODY is evaluated."
-;;   (declare (indent 0))
-;;   (let ((message-log-max nil))
-;;     `(with-temp-message (or (current-message) "") ,@body)))
-
-;; (require 'recentf)
-;; (setq recentf-save-file "~/.emacs.d/.recentf")
-;; (setq recentf-max-saved-items 1000)            ;; recentf に保存するファイルの数
-;; (setq recentf-exclude '(".recentf"))           ;; .recentf自体は含まない
-;; ;;(setq recentf-auto-cleanup 'never)             ;; 保存する内容を整理
-;; (run-with-idle-timer 30 t '(lambda ()          ;; 30秒ごとに .recentf を保存
-;;    (with-suppressed-message (recentf-save-list))))
-;; (require 'recentf-ext)
-
-;; ;; キーバインド
-;; (global-set-key (kbd "C-c o") 'recentf-open-files)
 
 
 ;; ;; OSのクリップボードもkill-ringに保存
