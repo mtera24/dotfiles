@@ -54,6 +54,7 @@ This function should only modify configuration layer settings."
      ;; syntax-checking
      ;; version-control
      treemacs
+     japanese 
      )
 
    ;; List of additional packages that will be installed without being
@@ -472,6 +473,7 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  (setq default-directory (getenv "HOME"))
   )
 
 (defun dotspacemacs/user-load ()
