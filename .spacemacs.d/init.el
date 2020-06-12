@@ -496,6 +496,24 @@ before packages are loaded."
   ;; for SKK
   ;; 辞書の設定
   (setq skk-large-jisyo "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L")
+  ;;
+  ;; for org-layer
+  ;;
+  ;; アジェンダ表示の対象ファイル
+  (setq org-agenda-files '(
+                           "~/org/aaa.org"
+                           "~/org/anken"
+                           "~/org/remind.org"
+                           )
+  )
+  ;; org-capture 構成
+  (setq org-capture-templates
+        '(("t" "Todo" entry (file+headline "~/org/remind.org" "■Capture")
+           "* REMIND %? (wrote on %U)")
+          ("k" "Knowledge" entry (file+headline "~/org/knowledge.org" "TOP")
+           "* %?  # Wrote on %U")
+          )
+  )
 
   )
 
