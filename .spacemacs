@@ -221,7 +221,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default font or prioritized list of fonts.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 10.0
+                               :size 20.0
                                :weight normal
                                :width normal)
 
@@ -551,20 +551,6 @@ before packages are loaded."
  ;; If there is more than one, they won't work right.
  )
 ))
-  ;; org templates
-  (setq org-capture-templates
-        '(("t" "Todo" entry (file+headline "~/org/remind.org" "■Capture")
-           "* REMIND %? (wrote on %U)")
-          ("k" "Knowledge" entry (file+headline "~/org/knowledge.org" "TOP")
-           "* %?\n  # Wrote on %U")
-          )
-  )
-  ;; TODO状態
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "SOMEDAY(s)")))
-  ;; DONEの時刻を記録
-  (setq org-log-done 'time)
-)
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
 (defun dotspacemacs/emacs-custom-settings ()
@@ -572,4 +558,4 @@ before packages are loaded."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-
+)
