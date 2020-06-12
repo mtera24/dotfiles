@@ -54,7 +54,7 @@ This function should only modify configuration layer settings."
      ;; syntax-checking
      ;; version-control
      treemacs
-     japanese
+     japanese 
      )
 
    ;; List of additional packages that will be installed without being
@@ -64,9 +64,7 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(
-                                      ivy
-                                      )
+   dotspacemacs-additional-packages '()
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -220,8 +218,13 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-colorize-cursor-according-to-state t
 
    ;; Default font or prioritized list of fonts.
-   dotspacemacs-default-font '("Source Code Pro"
-                               :size 20.0
+   ;; dotspacemacs-default-font '("Source Code Pro"
+   ;;                             :size 10.0
+   ;;                             :weight normal
+   ;;                             :width normal)
+
+   dotspacemacs-default-font '("Ricty Diminished"
+                               :size 15.0
                                :weight normal
                                :width normal)
 
@@ -485,77 +488,34 @@ dump."
   )
 
 (defun dotspacemacs/user-config ()
-"Configuration for user code:
+  "Configuration for user code:
 This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
-  (setq default-directory "~/")
-  ;; japanese-font setting
-  (set-fontset-font
-   nil 'japanese-jisx0208
-   (font-spec :family "Ricty Diminished"))
-  ;; to avoid misallignment in orgmode
-  (set-face-font 'default "Ricty Diminished-15")
   ;; for SKK
-  (global-set-key (kbd "C-x C-j") 'skk-mode)
   ;; 辞書の設定
   (setq skk-large-jisyo "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L")
-  ;; SKKを標準入力方式にする
-  (setq default-input-method "japanese-skk")
-  ;; for migemo
   ;;
-  (with-eval-after-load "migemo"
-  ;; (helm-migemo-mode 1)
-  (require 'avy-migemo-e.g.ivy)
-  (require 'avy-migemo-e.g.swiper)
-  (require 'avy-migemo-e.g.counsel))
+  ;; for org-layer
   ;;
-  ;; for org-mode settings
-  ;;
-  ;; 保存先
-  (setq my-org-directory "~/Documents/org/")
-  (setq my-org-agenda-directory "~/Documents/org/agenda/")
   ;; アジェンダ表示の対象ファイル
-  (setq org-agenda-files (list my-org-directory))
-  ;; アジェンダ表示で下線を用いる
-  (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
-  (setq hl-line-face 'underline)
-  ;; 標準の祝日を利用しない
-  (setq calendar-holidays nil(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(avy-migemo-function-names
-   (quote
-    ((counsel-clj :around avy-migemo-disable-around)
-     (counsel-grep :around counsel-grep-migemo-around)
-     counsel-grep-function-migemo counsel-grep-occur-migemo
-     (counsel-git-occur :around counsel-git-occur-migemo-around)
-     (counsel-find-file-occur :around counsel-find-file-occur-migemo-around)
-     swiper--add-overlays-migemo
-     (swiper--re-builder :around swiper--re-builder-migemo-around)
-     (ivy--regex :around ivy--regex-migemo-around)
-     (ivy--regex-ignore-order :around ivy--regex-ignore-order-migemo-around)
-     (ivy--regex-plus :around ivy--regex-plus-migemo-around)
-     ivy--highlight-default-migemo ivy-occur-revert-buffer-migemo ivy-occur-press-migemo avy-migemo-goto-char avy-migemo-goto-char-2 avy-migemo-goto-char-in-line avy-migemo-goto-char-timer avy-migemo-goto-subword-1 avy-migemo-goto-word-1 avy-migemo-isearch avy-migemo-org-goto-heading-timer avy-migemo--overlay-at avy-migemo--overlay-at-full)))
- '(org-agenda-files nil)
- '(package-selected-packages
-   (quote
-    (ivy-purpose counsel-projectile counsel swiper ivy ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org symon symbol-overlay string-inflection spaceline-all-the-icons restart-emacs request rainbow-delimiters popwin pcre2el password-generator paradox pangu-spacing overseer org-superstar org-projectile org-present org-pomodoro org-mime org-download org-cliplink org-brain open-junk-file nameless move-text macrostep lorem-ipsum link-hint japanese-holidays indent-guide hybrid-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org-rifle helm-org helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-ag google-translate golden-ratio gnuplot font-lock+ flycheck-package flycheck-elsa flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor-ja evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav editorconfig dumb-jump dotenv-mode diminish devdocs define-word ddskk column-enforce-mode clean-aindent-mode centered-cursor-mode avy-migemo auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-))
+  (setq org-agenda-files '(
+                           "~/org/aaa.org"
+                           "~/org/anken"
+                           "~/org/remind.org"
+                           )
+  )
+  ;; org-capture 構成
+  (setq org-capture-templates
+        '(("t" "Todo" entry (file+headline "~/org/remind.org" "■Capture")
+           "* REMIND %? (wrote on %U)")
+          ("k" "Knowledge" entry (file+headline "~/org/knowledge.org" "TOP")
+           "* %?  # Wrote on %U")
+          )
+  )
+
+  )
+
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
-(defun dotspacemacs/emacs-custom-settings ()
-  "Emacs custom settings.
-This is an auto-generated function, do not modify its content directly, use
-Emacs customize menu instead.
-This function is called at the very end of Spacemacs initialization."
-)
