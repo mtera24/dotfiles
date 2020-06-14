@@ -501,7 +501,7 @@ before packages are loaded."
   ;;
   ;; TODO状態
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "SOMEDAY(s)"))
+        '((sequence "APPT(a@/!)" "TODO(t)" "STARTED(s!)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCEL(c@/!)" "SOMEDAY(s@/!)"))
         )
   ;; DONEの時刻を記録
   (setq org-log-done 'time)
