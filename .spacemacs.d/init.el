@@ -499,13 +499,24 @@ before packages are loaded."
   ;;
   ;; for org-layer
   ;;
+  ;; TODO状態
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "SOMEDAY(s)"))
+        )
+  ;; DONEの時刻を記録
+  (setq org-log-done 'time)
   ;; アジェンダ表示の対象ファイル
   (setq org-agenda-files '(
                            "~/org/aaa.org"
                            "~/org/anken"
                            "~/org/remind.org"
                            )
-  )
+        )
+  ;; アジェンダ表示で下線を用いる
+  (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
+  (setq hl-line-face 'underline)
+  ;; 標準の祝日を利用しない
+  (setq calendar-holidays nil)
   ;; org-capture 構成
   (setq org-capture-templates
         '(("t" "Todo" entry (file+headline "~/org/remind.org" "■Capture")
