@@ -507,9 +507,7 @@ before packages are loaded."
   (setq org-log-done 'time)
   ;; アジェンダ表示の対象ファイル
   (setq org-agenda-files '(
-                           "~/org/aaa.org"
-                           "~/org/anken"
-                           "~/org/remind.org"
+                           "~/org/gtd.org"
                            )
         )
   ;; アジェンダ表示で下線を用いる
@@ -518,13 +516,13 @@ before packages are loaded."
   ;; 標準の祝日を利用しない
   (setq calendar-holidays nil)
   ;; org-capture 構成
-  (setq org-capture-templates
-        '(("t" "Todo" entry (file+headline "~/org/remind.org" "■Capture")
-           "* REMIND %? (wrote on %U)")
-          ("k" "Knowledge" entry (file+headline "~/org/knowledge.org" "TOP")
-           "* %?  # Wrote on %U")
-          )
-  )
+;;  (setq org-capture-templates
+;;        '(("t" "Todo" entry (file+headline "~/org/remind.org" "■Capture")
+;;           "* REMIND %? (wrote on %U)")
+;;          ("k" "Knowledge" entry (file+headline "~/org/knowledge.org" "TOP")
+;;           "* %?  # Wrote on %U")
+;;          )
+;;  )
 
   )
 
