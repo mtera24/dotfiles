@@ -498,6 +498,8 @@ before packages are loaded."
   ;; for SKK
   ;; 辞書の設定
   (setq skk-large-jisyo "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L")
+  ;; skkを標準の入力方法に
+  (setq default-input-method "japanese-skk")
   ;;
   ;; for org-layer
   ;;
