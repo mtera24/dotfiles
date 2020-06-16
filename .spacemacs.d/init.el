@@ -228,6 +228,8 @@ It should only modify the values of Spacemacs settings."
                                :weight normal
                                :width normal)
 
+   ;; macbook nomi font ookiku
+;;   (when (equal system-name "osmium.local")
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
 
