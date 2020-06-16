@@ -518,13 +518,13 @@ before packages are loaded."
   ;; 標準の祝日を利用しない
   (setq calendar-holidays nil)
   ;; org-capture 構成
-;;  (setq org-capture-templates
-;;        '(("t" "Todo" entry (file+headline "~/org/remind.org" "■Capture")
-;;           "* REMIND %? (wrote on %U)")
-;;          ("k" "Knowledge" entry (file+headline "~/org/knowledge.org" "TOP")
-;;           "* %?  # Wrote on %U")
-;;          )
-;;  )
+ (setq org-capture-templates
+       '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Inbox")
+          "* TODO %? (wrote on %U)")
+         ("k" "Knowledge" entry (file+headline "~/org/knowledge.org" "Inbox")
+          "* %?  # Wrote on %U")
+         )
+ )
 
   )
 
