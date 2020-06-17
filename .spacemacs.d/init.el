@@ -511,9 +511,12 @@ before packages are loaded."
   (setq org-log-done 'time)
   ;; アジェンダ表示の対象ファイル
   (setq org-agenda-files '(
-                           "~/org/gtd.org"
+                           "~/org/inbox.org"
+                           "~/org/active"
                            )
         )
+  ;; refile target
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
   ;; アジェンダ表示で下線を用いる
   (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
   (setq hl-line-face 'underline)
