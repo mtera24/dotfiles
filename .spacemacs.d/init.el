@@ -511,8 +511,8 @@ before packages are loaded."
   (setq org-log-done 'time)
   ;; アジェンダ表示の対象ファイル
   (setq org-agenda-files '(
-                           "~/org/inbox.org"
-                           "~/org/active"
+                           "~/org/gtd.org"
+                ;;           "~/org/active"
                            )
         )
   ;; refile target
