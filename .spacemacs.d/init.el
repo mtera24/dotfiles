@@ -32,7 +32,7 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
+   '(markdown
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
@@ -54,9 +54,9 @@ This function should only modify configuration layer settings."
      ;; syntax-checking
      ;; version-control
      treemacs
-     japanese 
-     )
-
+     japanese
+     (latex :variables latex-build-command "LatexMk")
+) 
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
@@ -496,20 +496,20 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
   ;; for SKK
-  ;; è¾æ›¸ã®è¨­å®š
+  ;; «‘‚Ìİ’è
   (setq skk-large-jisyo "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L")
-  ;; skkã‚’æ¨™æº–ã®å…¥åŠ›æ–¹æ³•ã«
+  ;; skk‚ğ•W€‚Ì“ü—Í•û–@‚É
   (setq default-input-method "japanese-skk")
   ;;
   ;; for org-layer
   ;;
-  ;; TODOçŠ¶æ…‹
+  ;; TODOó‘Ô
   (setq org-todo-keywords
         '((sequence "APPT(a@/!)" "TODO(t)" "STARTED(s!)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCEL(c@/!)" "SOMEDAY(s@/!)"))
         )
-  ;; DONEã®æ™‚åˆ»ã‚’è¨˜éŒ²
+  ;; DONE‚Ì‚ğ‹L˜^
   (setq org-log-done 'time)
-  ;; ã‚¢ã‚¸ã‚§ãƒ³ãƒ€è¡¨ç¤ºã®å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«
+  ;; ƒAƒWƒFƒ“ƒ_•\¦‚Ì‘ÎÛƒtƒ@ƒCƒ‹
   (setq org-agenda-files '(
                            "~/org/gtd.org"
                 ;;           "~/org/active"
@@ -517,12 +517,12 @@ before packages are loaded."
         )
   ;; refile target
   (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
-  ;; ã‚¢ã‚¸ã‚§ãƒ³ãƒ€è¡¨ç¤ºã§ä¸‹ç·šã‚’ç”¨ã„ã‚‹
+  ;; ƒAƒWƒFƒ“ƒ_•\¦‚Å‰ºü‚ğ—p‚¢‚é
   (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
   (setq hl-line-face 'underline)
-  ;; æ¨™æº–ã®ç¥æ—¥ã‚’åˆ©ç”¨ã—ãªã„
+  ;; •W€‚Ìj“ú‚ğ—˜—p‚µ‚È‚¢
   (setq calendar-holidays nil)
-  ;; org-capture æ§‹æˆ
+  ;; org-capture \¬
  (setq org-capture-templates
        '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Inbox")
           "* TODO %? (wrote on %U)")
@@ -530,8 +530,52 @@ before packages are loaded."
           "* %?  # Wrote on %U")
          )
  )
+ ;; for latex(AUCtex)
+ ;;
+ ;; AUC-TeX‚ÌŠî–{“I‚Èİ’è
+ (add-hook 'outline-minor-mode-hook
+           (lambda () (local-set-key "\C-c\C-o"
+                                     outline-mode-prefix-map)))
+ (load "auctex.el" nil t t) ;; activate AUCTeX
+ (setq Tex-auto-save t)
+ (setq Tex-parse-self t)
+                                        ; (load "preview-latex.el" nil t t)
+ ;; “ú–{Œêİ’è
+ (with-eval-after-load 'tex-jp
+   (dolist (command '("pTeX" "pLaTeX" "pBibTeX" "jTeX" "jLaTeX" "jBibTeX" "Mendex"))
+     (delq (assoc command TeX-command-list) TeX-command-list)))
+ (setq japanese-TeX-engine-default 'uptex)
+ (setq japanese-LaTeX-default-style "bxjsarticle")
+ (add-hook 'LaTeX-mode-hook 'japanese-latex-mode) 
+ ;;
+ (add-hook 'LaTeX-mode-hook
+           (lambda ()
+             (TeX-PDF-mode) ;; produce pdf
+             (TeX-source-correlate-mode) ;; forward and inverse seach
+             (turn-on-reftex) ;; enable RefTex
+             (LaTeX-math-mode)
+             (outline-minor-mode)
+             ))
+ ;;
+ ;; AUCTeXã‚Ålatexmk‚ğ—˜—p‚·‚é‚½‚ß‚Ìİ’è
+ ;;
+ (use-package auctex-latexmk)
+ (auctex-latexmk-setup)
+ ;;
+ ;; ƒRƒ“ƒpƒCƒ‹‚³‚ê‚½PDF‚ğSumatraPDF‚Å•\¦‚·‚éİ’è
+ ;; Œ»İ•ÒW’†‚Ì‰ÓŠ‚ªƒnƒCƒ‰ƒCƒg‚à‚³‚ê‚é
+ (when (eq system-type 'windows-nt)
+   (custom-set-variables
+    '(TeX-source-correlate-method (quote synctex))
+    '(TeX-source-correlate-mode t)
+    '(TeX-source-correlate-start-server (quote Always))
+    '(TeX-view-program-list (quote (("Sumatra PDF" ("\"C:/Program Files/SumatraPDF/SumatraPDF.exe\" -reuse-instance" (mode-io-correlate " -forward-search %b %n") " %o")))))
+    '(TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and start") (output-dvi "Yap") (output-pdf "Sumatra PDF") (output-html "start"))))
+    )
+   )
+ )
+;; ª‚±‚ÌŠ‡ŒÊ‚ª end of user-conf ()
 
-  )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -547,7 +591,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (sound-wav deferred ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org symon symbol-overlay string-inflection spaceline-all-the-icons restart-emacs request rainbow-delimiters popwin pcre2el password-generator paradox pangu-spacing overseer org-superstar org-projectile org-present org-pomodoro org-mime org-download org-cliplink org-brain open-junk-file nameless move-text macrostep lorem-ipsum link-hint japanese-holidays indent-guide hybrid-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org-rifle helm-org helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-ag google-translate golden-ratio gnuplot font-lock+ flycheck-package flycheck-elsa flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor-ja evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav editorconfig dumb-jump dotenv-mode diminish devdocs define-word ddskk column-enforce-mode clean-aindent-mode centered-cursor-mode avy-migemo auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line))))
+    (auctex-latexmk vmd-mode mmm-mode markdown-toc markdown-mode gh-md emoji-cheat-sheet-plus company-emoji company sound-wav deferred ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org symon symbol-overlay string-inflection spaceline-all-the-icons restart-emacs request rainbow-delimiters popwin pcre2el password-generator paradox pangu-spacing overseer org-superstar org-projectile org-present org-pomodoro org-mime org-download org-cliplink org-brain open-junk-file nameless move-text macrostep lorem-ipsum link-hint japanese-holidays indent-guide hybrid-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org-rifle helm-org helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-ag google-translate golden-ratio gnuplot font-lock+ flycheck-package flycheck-elsa flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor-ja evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav editorconfig dumb-jump dotenv-mode diminish devdocs define-word ddskk column-enforce-mode clean-aindent-mode centered-cursor-mode avy-migemo auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
