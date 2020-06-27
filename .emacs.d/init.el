@@ -49,10 +49,28 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(doom-themes-enable-bold t)
+ '(doom-themes-enable-italic t)
  '(package-selected-packages (quote (package-utils use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(doom-modeline-bar ((t (:background "#6272a4")))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;#theme
+;;; doom theme
+(use-package doom-themes
+    :ensure t
+    :custom
+    (doom-themes-enable-italic t)
+    (doom-themes-enable-bold t)
+    :custom-face
+    (doom-modeline-bar ((t (:background "#6272a4"))))
+    :config
+    (load-theme 'doom-dracula t)
+    (doom-themes-neotree-config)
+    (doom-themes-org-config))
