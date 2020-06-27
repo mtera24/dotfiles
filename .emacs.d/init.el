@@ -49,18 +49,21 @@
  ;; If there is more than one, they won't work right.
  '(doom-themes-enable-bold t)
  '(doom-themes-enable-italic t)
- '(package-selected-packages (quote (package-utils use-package))))
+ '(package-selected-packages (quote (org-pomodoro package-utils use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(doom-modeline-bar ((t (:background "#6272a4")))))
+ '(doom-modeline-bar ((t (:background "#6272a4"))))
+ '(org-pomodoro-mode-line ((t (:foreground "#ff5555"))))
+ '(org-pomodoro-mode-line-break ((t (:foreground "#50fa7b")))))
 
 
+;;;#direct settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;#appearance
-;; フォントをRictyに
+;; フォントをRictyに,ookisa wa height de kaerare ru.
 (set-face-attribute 'default nil
                     :family "Ricty Diminished"
                     :height 150)
@@ -69,6 +72,7 @@
 (setq-default line-spacing 0.2)
 
 
+;;;#settings by packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;#theme
 ;;; doom theme
@@ -83,3 +87,30 @@
     (load-theme 'doom-dracula t)
     (doom-themes-neotree-config)
     (doom-themes-org-config))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;#org-pomodoro
+(use-package org-pomodoro
+  :ensure t
+    :after org-agenda
+    :custom
+    (org-pomodoro-ask-upon-killing t)
+    (org-pomodoro-format "%s")
+    (org-pomodoro-short-break-format "%s")
+    (org-pomodoro-long-break-format  "%s")
+    :custom-face
+    (org-pomodoro-mode-line ((t (:foreground "#ff5555"))))
+    (org-pomodoro-mode-line-break   ((t (:foreground "#50fa7b"))))
+    :hook
+    (org-pomodoro-started . (lambda () (notifications-notify
+                                               :title "org-pomodoro"
+                           :body "Let's focus for 25 minutes!"
+                           :app-icon "~/.emacs.d/img/001-food-and-restaurant.png")))
+    (org-pomodoro-finished . (lambda () (notifications-notify
+                                               :title "org-pomodoro"
+                           :body "Well done! Take a break."
+                           :app-icon "~/.emacs.d/img/004-beer.png")))
+    :config
+    :bind (:map org-agenda-mode-map
+                ("p" . org-pomodoro)))
