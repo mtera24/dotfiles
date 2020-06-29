@@ -49,7 +49,8 @@
 ;;;#appearance
 ;; フォントをRictyに,ookisa wa height de kaerare ru.
 (set-face-attribute 'default nil
-                    :family "Ricty Diminished"
+;;                   :family "Ricty Diminished"
+		    :family "HackGenNerd Console"
                     :height 150)
 
 ;; 行間を指定
@@ -126,6 +127,24 @@
     (doom-themes-org-config)
     )
 
+
+;;;# doom modeline
+(use-package doom-modeline
+  :ensure t
+      :custom
+      (doom-modeline-buffer-file-name-style 'truncate-with-project)
+      (doom-modeline-icon t)
+      (doom-modeline-major-mode-icon nil)
+      (doom-modeline-minor-modes nil)
+      :hook
+      (after-init . doom-modeline-mode)
+      :config
+      (line-number-mode 0)
+      (column-number-mode 0)
+      (doom-modeline-def-modeline 'main
+    '(bar workspace-number window-number evil-state god-state ryo-modal xah-fly-keys matches buffer-info remote-host buffer-position parrot selection-info)
+    '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
+
 ;;;#task-measuring
 (defun ladicle/task-clocked-time ()
         "Return a string with the clocked time and effort, if any"
@@ -153,7 +172,7 @@
     :custom-face
     (org-pomodoro-mode-line ((t (:foreground "#ff5555"))))
     (org-pomodoro-mode-line-break   ((t (:foreground "#50fa7b"))))
-    :hook
+;;    :hook
     ;; (org-pomodoro-started . (lambda () (notifications-notify
     ;;                                            :title "org-pomodoro"
     ;;                        :body "Let's focus for 25 minutes!"
@@ -168,3 +187,19 @@
     :bind (:map org-agenda-mode-map
                 ("p" . org-pomodoro)))
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(doom-themes-enable-bold t)
+ '(doom-themes-enable-italic t)
+ '(package-selected-packages
+   (quote
+    (doom-modeline use-package sound-wav package-utils org-pomodoro madhat2r-theme emojify doom-themes all-the-icons abyss-theme))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(doom-modeline-bar ((t (:background "#6272a4")))))
