@@ -109,6 +109,8 @@
 ;; が通っているならば不要です。
 ;;   (setq Info-default-directory-list
 ;;         (cons "c:/emacs-26.3-x86_64/share/info" Info-default-directory-list))
+
+;;(use-package ddskk)
   ;; skkを標準の入力方法に
   (setq default-input-method "japanese-skk")
 
@@ -168,6 +170,17 @@
   ("C-x e" . 'emojify-insert-emoji)
   )
 
+
+;;;#evil-mode
+(use-package evil)
+
+;;;#undo-tree
+(use-package undo-tree
+  :bind
+  ("M-/" . undo-tree-redo)
+  :config
+  (global-undo-tree-mode))
+
 ;;;#theme
 ;;;# doom theme
 (use-package doom-themes
@@ -195,10 +208,18 @@
       :hook
       (after-init . doom-modeline-mode)
       :config
+      ;; evil-state
+      ;;
+      ;; evil-state
+      (doom-modeline-def-segment evil-state
+	"The current evil state.  Requires `evil-mode' to be enabled."
+	(when (bound-and-true-p evil-local-mode)
+	  (s-trim-right (evil-state-property evil-state :tag t))))
       (line-number-mode 0)
       (column-number-mode 0)
       (doom-modeline-def-modeline 'main
-    '(bar workspace-number window-number evil-state god-state ryo-modal xah-fly-keys matches buffer-info remote-host buffer-position parrot selection-info)
+    '(bar workspace-name window-number evil-state  matches buffer-info remote-host buffer-position parrot selection-info)
+;;rest  '(god-state ryo-modal xah-fly-keys matches buffer-info remote-host buffer-position parrot selection-info)
     '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
 
 ;;;#task-measuring
