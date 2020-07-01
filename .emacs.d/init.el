@@ -56,6 +56,20 @@
 ;; 行間を指定
 (setq-default line-spacing 0.2)
 
+;; Default Encoding
+(prefer-coding-system 'utf-8-unix)
+(set-locale-environment "en_US.UTF-8") ; "ja_JP.UTF-8"
+(set-default-coding-systems 'utf-8-unix)
+(set-selection-coding-system 'utf-8-unix)
+(set-buffer-file-coding-system 'utf-8-unix)
+(set-clipboard-coding-system 'utf-8) ; included by set-selection-coding-system
+(set-keyboard-coding-system 'utf-8) ; configured by prefer-coding-system
+(set-terminal-coding-system 'utf-8) ; configured by prefer-coding-system
+(setq buffer-file-coding-system 'utf-8) ; utf-8-unix
+(setq save-buffer-coding-system 'utf-8-unix) ; nil
+(setq process-coding-system-alist
+      (cons '("grep" utf-8 . utf-8) process-coding-system-alist))
+
 ;; 表示を単純化（スタートアップメッセージなし．スクラッチは空．ツールバー無し，
 ;; スクロールバーなし）．，ベル無し．
 (setq ring-bell-function 'ignore)
@@ -64,6 +78,10 @@
 (tool-bar-mode -1)
 (set-scroll-bar-mode nil)
 (setq frame-title-format (format "%%f - Emacs@%s" (system-name)))
+
+
+
+;;;# language
 
 
 ;;;# for org-mode
@@ -98,6 +116,14 @@
 
 ;;;#settings by packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;#persp
+(use-package persp-mode
+  :disabled
+  :diminish
+  :commands (get-current-persp persp-contain-buffer-p)
+  :hook (after-init . persp-mode))
+
 
 ;;;#all-the-icons
 (use-package all-the-icons
