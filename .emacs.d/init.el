@@ -27,7 +27,7 @@
 ;;   require/locate-library ができないため、(package-initialize) を事前
 ;;   に実行する。
 
-(package-initialize)
+
 ;;(setq package-enable-at-startup nil) ; 初期化済みなので自動初期化は停止。
 
 ;; パッケージの情報は、~/.emacs.d/elpa/archives/ に格納される。自分で
@@ -36,12 +36,27 @@
 ;; ルが自動生成される。
 
 ;;;; Package Archives
-(set-variable 'package-archives
-              '(("gnu" . "http://elpa.gnu.org/packages/")
-                ("melpa" . "http://melpa.milkbox.net/packages/")
-                ;; org-mode
-                ("org"   . "http://orgmode.org/elpa/")
-                ))
+;;; including use-package
+(eval-when-compile
+  (require 'package)
+  (package-initialize)
+  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package)
+;;    (package-install 'diminish)
+    (package-install 'quelpa)
+    (package-install 'bind-key))
+
+  (setq use-package-always-ensure t)
+  (setq use-package-expand-minimally t)
+
+  (require 'use-package))
+;;(require 'diminish)
+(require 'bind-key)
 
 
 ;;;#direct settings
