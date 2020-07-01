@@ -63,27 +63,70 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;#appearance
 ;; フォントをRictyに,ookisa wa height de kaerare ru.
-(set-face-attribute 'default nil
-;;                   :family "Ricty Diminished"
-		    :family "HackGenNerd Console"
-                    :height 150)
+;; (set-face-attribute 'default nil
+;; ;;                   :family "Ricty Diminished"
+;; 		    :family "HackGenNerd Console"
+;;                     :height 150)
 
 ;; 行間を指定
-(setq-default line-spacing 0.2)
+;;(setq-default line-spacing 0.2)
+
+;; font (Ladicleさん)
+(if window-system
+    (progn
+      ;; UI parts
+      (toggle-scroll-bar 0)
+      (tool-bar-mode 0)
+      (menu-bar-mode 0)
+
+      ;; Japanese font settings
+      (defun set-japanese-font (family)
+        (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0208        (font-spec :family family))
+        (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0212        (font-spec :family family))
+        (set-fontset-font (frame-parameter nil 'font) 'katakana-jisx0201        (font-spec :family family)))
+
+      ;; Overwrite latin and greek char's font
+      (defun set-latin-and-greek-font (family)
+        (set-fontset-font (frame-parameter nil 'font) '(#x0250 . #x02AF) (font-spec :family family)) ; IPA extensions
+        (set-fontset-font (frame-parameter nil 'font) '(#x00A0 . #x00FF) (font-spec :family family)) ; latin-1
+        (set-fontset-font (frame-parameter nil 'font) '(#x0100 . #x017F) (font-spec :family family)) ; latin extended-A
+        (set-fontset-font (frame-parameter nil 'font) '(#x0180 . #x024F) (font-spec :family family)) ; latin extended-B
+        (set-fontset-font (frame-parameter nil 'font) '(#x2018 . #x2019) (font-spec :family family)) ; end quote
+        (set-fontset-font (frame-parameter nil 'font) '(#x2588 . #x2588) (font-spec :family family)) ; ?
+        (set-fontset-font (frame-parameter nil 'font) '(#x2500 . #x2500) (font-spec :family family)) ; 
+        (set-fontset-font (frame-parameter nil 'font) '(#x2504 . #x257F) (font-spec :family family)) ; box character
+        (set-fontset-font (frame-parameter nil 'font) '(#x0370 . #x03FF) (font-spec :family family)))
+
+      (setq use-default-font-for-symbols nil)
+      (setq inhibit-compacting-font-caches t)
+      ;; (setq jp-font-family "SF Mono Square")
+      ;; (setq default-font-family "FuraCode Nerd Font")
+      ;; (setq jp-font-family "HackGenNerd Console")
+      ;; (setq default-font-family "FiraCode NF")
+      (setq jp-font-family "Cica")
+      (setq default-font-family "Cica")
+
+      ;; (set-face-attribute 'default nil :family default-font-family)
+      (when (eq system-type 'windows-nt)
+                (set-face-attribute 'default nil :family jp-font-family :height 150))
+      (when (eq system-type 'darwin)
+                (set-face-attribute 'default nil :family jp-font-family :height 140))
+      (when (eq system-type 'gnu/linux)
+                (set-face-attribute 'default nil :family jp-font-family :height 150))
+      (set-japanese-font jp-font-family)
+      (set-latin-and-greek-font default-font-family)
+      (add-to-list 'face-font-rescale-alist (cons default-font-family 0.86))
+      (add-to-list 'face-font-rescale-alist (cons jp-font-family 1.0))))
+
 
 ;; Default Encoding
+;;
+(set-language-environment 'Japanese)
+;;
+(set-keyboard-coding-system 'utf-8)
+;; coding-systemで自動的に文字コードを決定する際の優先するコードリストを設定する。
+(setq buffer-file-coding-system 'utf-8-unix)
 (prefer-coding-system 'utf-8-unix)
-(set-locale-environment "en_US.UTF-8") ; "ja_JP.UTF-8"
-(set-default-coding-systems 'utf-8-unix)
-(set-selection-coding-system 'utf-8-unix)
-(set-buffer-file-coding-system 'utf-8-unix)
-(set-clipboard-coding-system 'utf-8) ; included by set-selection-coding-system
-(set-keyboard-coding-system 'utf-8) ; configured by prefer-coding-system
-(set-terminal-coding-system 'utf-8) ; configured by prefer-coding-system
-(setq buffer-file-coding-system 'utf-8) ; utf-8-unix
-(setq save-buffer-coding-system 'utf-8-unix) ; nil
-(setq process-coding-system-alist
-      (cons '("grep" utf-8 . utf-8) process-coding-system-alist))
 
 ;; 表示を単純化（スタートアップメッセージなし．スクラッチは空．ツールバー無し，
 ;; スクロールバーなし）．，ベル無し．
@@ -159,8 +202,9 @@
 
 ;;;#all-the-icons
 (use-package all-the-icons
-  :ensure t
-  )
+  :custom
+  (all-the-icons-scale-factor 1.0))
+  
 
 ;;;#emoji (for the following themes)
 (use-package emojify :ensure t
@@ -169,6 +213,12 @@
   :bind
   ("C-x e" . 'emojify-insert-emoji)
   )
+
+
+;;;#which-key
+(use-package which-key
+    :diminish which-key-mode
+    :hook (after-init . which-key-mode))
 
 
 ;;;#evil-mode
@@ -199,25 +249,22 @@
 
 ;;;# doom modeline
 (use-package doom-modeline
-  :ensure t
-      :custom
-      (doom-modeline-buffer-file-name-style 'truncate-with-project)
-      (doom-modeline-icon t)
-      (doom-modeline-major-mode-icon nil)
-      (doom-modeline-minor-modes nil)
-      :hook
-      (after-init . doom-modeline-mode)
-      :config
-      ;; evil-state
-      ;;
-      ;; evil-state
-      (doom-modeline-def-segment evil-state
-	"The current evil state.  Requires `evil-mode' to be enabled."
-	(when (bound-and-true-p evil-local-mode)
-	  (s-trim-right (evil-state-property evil-state :tag t))))
-      (line-number-mode 0)
-      (column-number-mode 0)
-      (doom-modeline-def-modeline 'main
+  :custom
+  (doom-modeline-buffer-file-name-style 'truncate-with-project)
+  (doom-modeline-icon t)
+  (doom-modeline-major-mode-icon t)
+  (doom-modeline-minor-modes nil)
+  :hook
+  (after-init . doom-modeline-mode)
+  :config
+  ;; evil-state
+  (doom-modeline-def-segment evil-state
+    "The current evil state.  Requires `evil-mode' to be enabled."
+    (when (bound-and-true-p evil-local-mode)
+      (s-trim-right (evil-state-property evil-state :tag t))))
+  (line-number-mode 0)
+  (column-number-mode 0)
+  (doom-modeline-def-modeline 'main
     '(bar workspace-name window-number evil-state  matches buffer-info remote-host buffer-position parrot selection-info)
 ;;rest  '(god-state ryo-modal xah-fly-keys matches buffer-info remote-host buffer-position parrot selection-info)
     '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
