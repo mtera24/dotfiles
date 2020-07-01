@@ -96,7 +96,22 @@
 
 
 
-;;;# language
+;;;# ddskk
+;; load-path の設定
+;; ----------------
+;; 次のとおり 変数 load-path を設定してください。既にパスが通っているならば
+;; 不要です。
+;;   (setq load-path (cons "c:/emacs-26.3-x86_64/share/emacs/site-lisp/skk" load-path))
+
+;; info ディレクトリの設定
+;; -----------------------
+;; 次のとおり 変数 Info-default-directory-list を設定してください。既にパス
+;; が通っているならば不要です。
+;;   (setq Info-default-directory-list
+;;         (cons "c:/emacs-26.3-x86_64/share/info" Info-default-directory-list))
+  ;; skkを標準の入力方法に
+  (setq default-input-method "japanese-skk")
+
 
 
 ;;;# for org-mode
