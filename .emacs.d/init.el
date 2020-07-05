@@ -64,6 +64,9 @@
 	    '(lambda nil
 	       (hs-minor-mode 1))))
 
+(leaf restart-emacs
+  :ensure t)
+
 (leaf *standard-configuration
   :config
   ;; font setting
@@ -192,8 +195,6 @@
 
 ;; ;; 行間を指定
 ;; ;;(setq-default line-spacing 0.2)
-
-
 
 ;; ;; Default Encoding
 ;; ;;
@@ -380,8 +381,8 @@
  '(doom-modeline-minor-modes nil)
  '(doom-themes-enable-bold t)
  '(doom-themes-enable-italic t)
- '(imenu-list-position (quote left))
- '(imenu-list-size 30)
+ '(imenu-list-position (quote left) t)
+ '(imenu-list-size 30 t)
  '(package-archives
    (quote
     (("org" . "https://orgmode.org/elpa/")
