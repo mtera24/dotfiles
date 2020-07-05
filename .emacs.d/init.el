@@ -35,6 +35,35 @@
   :ensure t
   :bind (("C-c e" . macrostep-expand)))
 
+;; set hide/show folding mode
+(leaf *hs-minor-mode
+  :bind (("C-#" . hs-toggle-hiding))
+  :config
+  (add-hook 'c++-mode-hook
+	    '(lambda nil
+	       (hs-minor-mode 1)))
+  (add-hook 'c-mode-hook
+	    '(lambda nil
+	       (hs-minor-mode 1)))
+  (add-hook 'scheme-mode-hook
+	    '(lambda nil
+	       (hs-minor-mode 1)))
+  (add-hook 'emacs-lisp-mode-hook
+	    '(lambda nil
+	       (hs-minor-mode 1)))
+  (add-hook 'lisp-mode-hook
+	    '(lambda nil
+	       (hs-minor-mode 1)))
+  (add-hook 'python-mode-hook
+	    '(lambda nil
+	       (hs-minor-mode 1)))
+  (add-hook 'ruby-mode-hook
+	    '(lambda nil
+	       (hs-minor-mode 1)))
+  (add-hook 'xml-mode-hook
+	    '(lambda nil
+	       (hs-minor-mode 1))))
+
 ;;set theme at last
 (leaf doom-themes
   :ensure t
