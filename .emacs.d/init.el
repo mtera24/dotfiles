@@ -130,7 +130,7 @@
     (when (eq system-type 'windows-nt)
       (set-face-attribute 'default nil :family jp-font-family :height 150))
     (when (eq system-type 'darwin)
-      (set-face-attribute 'default nil :family jp-font-family :height 140))
+      (set-face-attribute 'default nil :family jp-font-family :height 250))
     (when (eq system-type 'gnu/linux)
       (set-face-attribute 'default nil :family jp-font-family :height 150))
     (set-japanese-font jp-font-family)
@@ -147,6 +147,9 @@
     (when (eq system-type 'windows-nt)
       (setq initial-frame-alist
 	    '((top . 0) (left . 1910) (width . 126) (height . 68))))
+    (when (eq system-type 'darwin)
+      (setq initial-frame-alist
+	    '((top . 24) (left . 720) (width . 53) (height . 53))))
     )
   ;;# doom modeline
   (leaf doom-modeline
@@ -371,6 +374,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(doom-modeline-buffer-file-name-style (quote truncate-with-project))
+ '(doom-modeline-icon t)
+ '(doom-modeline-major-mode-icon t)
+ '(doom-modeline-minor-modes nil)
+ '(doom-themes-enable-bold t)
+ '(doom-themes-enable-italic t)
+ '(imenu-list-position (quote left))
+ '(imenu-list-size 30)
  '(package-archives
    (quote
     (("org" . "https://orgmode.org/elpa/")
@@ -384,4 +395,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(doom-modeline-bar ((t (:background "#6272a4"))) nil "Customized with leaf in doom-themes block"))
