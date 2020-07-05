@@ -36,8 +36,8 @@
   :bind (("C-c e" . macrostep-expand)))
 
 ;; set hide/show folding mode
-(leaf *hs-minor-mode
-  :bind (("C-#" . hs-toggle-hiding))
+(leaf *hs-minor-mode-setting
+;;  :bind (("C-#" . hs-toggle-hiding))
   :config
   (add-hook 'c++-mode-hook
 	    '(lambda nil
@@ -64,6 +64,90 @@
 	    '(lambda nil
 	       (hs-minor-mode 1))))
 
+(leaf *standard-configuration
+  :config
+  ;; font setting
+;; font (Ladicleさん)
+  (leaf *font-settings
+    :when window-system
+    :setq ((use-default-font-for-symbols)
+	   (inhibit-compacting-font-caches . t)
+	   (jp-font-family . "Cica")
+	   (default-font-family . "Cica"))
+    :config
+    (defun set-japanese-font (family)
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       'japanese-jisx0208
+       (font-spec :family family))
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       'japanese-jisx0212
+       (font-spec :family family))
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       'katakana-jisx0201
+       (font-spec :family family)))
+
+    (defun set-latin-and-greek-font (family)
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       '(592 . 687)
+       (font-spec :family family))
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       '(160 . 255)
+       (font-spec :family family))
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       '(256 . 383)
+       (font-spec :family family))
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       '(384 . 591)
+       (font-spec :family family))
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       '(8216 . 8217)
+       (font-spec :family family))
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       '(9608 . 9608)
+       (font-spec :family family))
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       '(9472 . 9472)
+       (font-spec :family family))
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       '(9476 . 9599)
+       (font-spec :family family))
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       '(880 . 1023)
+       (font-spec :family family)))
+
+    (when (eq system-type 'windows-nt)
+      (set-face-attribute 'default nil :family jp-font-family :height 150))
+    (when (eq system-type 'darwin)
+      (set-face-attribute 'default nil :family jp-font-family :height 140))
+    (when (eq system-type 'gnu/linux)
+      (set-face-attribute 'default nil :family jp-font-family :height 150))
+    (set-japanese-font jp-font-family)
+    (set-latin-and-greek-font default-font-family)
+    (add-to-list 'face-font-rescale-alist
+		 (cons default-font-family 0.86))
+    (add-to-list 'face-font-rescale-alist
+		 (cons jp-font-family 1.0)))
+  (leaf *display-settings
+    :config
+    (toggle-scroll-bar 0)
+    (tool-bar-mode 0)
+    (menu-bar-mode 0))
+ 
+  )
+  
+
 ;;set theme at last
 (leaf doom-themes
   :ensure t
@@ -78,67 +162,17 @@
   (doom-themes-neotree-config)
   (doom-themes-org-config))
 
-
+;; end of setting with leaf
 (provide 'init)
 
 ;; ;;;#direct settings
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;;;#appearance
 ;; ;; フォントをRictyに,ookisa wa height de kaerare ru.
-;; ;; (set-face-attribute 'default nil
-;; ;; ;;                   :family "Ricty Diminished"
-;; ;; 		    :family "HackGenNerd Console"
-;; ;;                     :height 150)
 
 ;; ;; 行間を指定
 ;; ;;(setq-default line-spacing 0.2)
 
-;; ;; font (Ladicleさん)
-;; (if window-system
-;;     (progn
-;;       ;; UI parts
-;;       (toggle-scroll-bar 0)
-;;       (tool-bar-mode 0)
-;;       (menu-bar-mode 0)
-
-;;       ;; Japanese font settings
-;;       (defun set-japanese-font (family)
-;;         (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0208        (font-spec :family family))
-;;         (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0212        (font-spec :family family))
-;;         (set-fontset-font (frame-parameter nil 'font) 'katakana-jisx0201        (font-spec :family family)))
-
-;;       ;; Overwrite latin and greek char's font
-;;       (defun set-latin-and-greek-font (family)
-;;         (set-fontset-font (frame-parameter nil 'font) '(#x0250 . #x02AF) (font-spec :family family)) ; IPA extensions
-;;         (set-fontset-font (frame-parameter nil 'font) '(#x00A0 . #x00FF) (font-spec :family family)) ; latin-1
-;;         (set-fontset-font (frame-parameter nil 'font) '(#x0100 . #x017F) (font-spec :family family)) ; latin extended-A
-;;         (set-fontset-font (frame-parameter nil 'font) '(#x0180 . #x024F) (font-spec :family family)) ; latin extended-B
-;;         (set-fontset-font (frame-parameter nil 'font) '(#x2018 . #x2019) (font-spec :family family)) ; end quote
-;;         (set-fontset-font (frame-parameter nil 'font) '(#x2588 . #x2588) (font-spec :family family)) ; ?
-;;         (set-fontset-font (frame-parameter nil 'font) '(#x2500 . #x2500) (font-spec :family family)) ; 
-;;         (set-fontset-font (frame-parameter nil 'font) '(#x2504 . #x257F) (font-spec :family family)) ; box character
-;;         (set-fontset-font (frame-parameter nil 'font) '(#x0370 . #x03FF) (font-spec :family family)))
-
-;;       (setq use-default-font-for-symbols nil)
-;;       (setq inhibit-compacting-font-caches t)
-;;       ;; (setq jp-font-family "SF Mono Square")
-;;       ;; (setq default-font-family "FuraCode Nerd Font")
-;;       ;; (setq jp-font-family "HackGenNerd Console")
-;;       ;; (setq default-font-family "FiraCode NF")
-;;       (setq jp-font-family "Cica")
-;;       (setq default-font-family "Cica")
-
-;;       ;; (set-face-attribute 'default nil :family default-font-family)
-;;       (when (eq system-type 'windows-nt)
-;;                 (set-face-attribute 'default nil :family jp-font-family :height 150))
-;;       (when (eq system-type 'darwin)
-;;                 (set-face-attribute 'default nil :family jp-font-family :height 140))
-;;       (when (eq system-type 'gnu/linux)
-;;                 (set-face-attribute 'default nil :family jp-font-family :height 150))
-;;       (set-japanese-font jp-font-family)
-;;       (set-latin-and-greek-font default-font-family)
-;;       (add-to-list 'face-font-rescale-alist (cons default-font-family 0.86))
-;;       (add-to-list 'face-font-rescale-alist (cons jp-font-family 1.0))))
 
 
 ;; ;; Default Encoding
