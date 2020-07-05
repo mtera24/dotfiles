@@ -143,7 +143,12 @@
     :config
     (toggle-scroll-bar 0)
     (tool-bar-mode 0)
-    (menu-bar-mode 0))
+    (menu-bar-mode 0)
+    (when (eq system-type 'windows-nt)
+      (setq initial-frame-alist
+	    '((top . 0) (left . 1910) (width . 126) (height . 68))))
+    )
+
  
   )
   
