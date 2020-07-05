@@ -66,7 +66,13 @@
 
 (leaf restart-emacs
   :ensure t)
-
+(leaf *input-assist
+  :config
+  (leaf ddskk
+    :ensure t
+    :setq (skk-large-jisyo . "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L")
+    :setq (default-input-method . "japanese-skk"))
+  )
 (leaf *standard-configuration
   :config
   ;; font setting
