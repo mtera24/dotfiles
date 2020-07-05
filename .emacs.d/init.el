@@ -67,7 +67,7 @@
 (leaf *standard-configuration
   :config
   ;; font setting
-;; font (Ladicleさん)
+  ;; font (Ladicleさん)
   (leaf *font-settings
     :when window-system
     :setq ((use-default-font-for-symbols)
@@ -148,7 +148,24 @@
       (setq initial-frame-alist
 	    '((top . 0) (left . 1910) (width . 126) (height . 68))))
     )
-
+  ;;# doom modeline
+  (leaf doom-modeline
+    :hook (after-init-hook)
+    :custom ((doom-modeline-buffer-file-name-style quote truncate-with-project)
+	     (doom-modeline-icon . t)
+	     (doom-modeline-major-mode-icon . t)
+	     (doom-modeline-minor-modes))
+    :config
+    (with-eval-after-load 'doom-modeline
+      (doom-modeline-def-segment evil-state "The current evil state.  Requires `evil-mode' to be enabled."
+				 (when (bound-and-true-p evil-local-mode)
+				   (s-trim-right
+				    (evil-state-property evil-state :tag t))))
+      (line-number-mode 0)
+      (column-number-mode 0)
+      (doom-modeline-def-modeline 'main
+				  '(bar workspace-name window-number evil-state matches buffer-info remote-host buffer-position parrot selection-info)
+				  '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker))))
  
   )
   
@@ -170,11 +187,6 @@
 ;; end of setting with leaf
 (provide 'init)
 
-;; ;;;#direct settings
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;;#appearance
-;; ;; フォントをRictyに,ookisa wa height de kaerare ru.
-
 ;; ;; 行間を指定
 ;; ;;(setq-default line-spacing 0.2)
 
@@ -194,8 +206,7 @@
 ;; (setq ring-bell-function 'ignore)
 ;; (setq inhibit-startup-message t)
 ;; (setq initial-scratch-message "") 
-;; (tool-bar-mode -1)
-;; (set-scroll-bar-mode nil)
+
 ;; (setq frame-title-format (format "%%f - Emacs@%s" (system-name)))
 
 
@@ -296,27 +307,6 @@
 ;; ;;;# doom theme
 
 ;; 
-;; ;;;# doom modeline
-;; (use-package doom-modeline
-;;   :custom
-;;   (doom-modeline-buffer-file-name-style 'truncate-with-project)
-;;   (doom-modeline-icon t)
-;;   (doom-modeline-major-mode-icon t)
-;;   (doom-modeline-minor-modes nil)
-;;   :hook
-;;   (after-init . doom-modeline-mode)
-;;   :config
-;;   ;; evil-state
-;;   (doom-modeline-def-segment evil-state
-;;     "The current evil state.  Requires `evil-mode' to be enabled."
-;;     (when (bound-and-true-p evil-local-mode)
-;;       (s-trim-right (evil-state-property evil-state :tag t))))
-;;   (line-number-mode 0)
-;;   (column-number-mode 0)
-;;   (doom-modeline-def-modeline 'main
-;;     '(bar workspace-name window-number evil-state  matches buffer-info remote-host buffer-position parrot selection-info)
-;; ;;rest  '(god-state ryo-modal xah-fly-keys matches buffer-info remote-host buffer-position parrot selection-info)
-;;     '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
 ;; 
 ;; ;;;#task-measuring
 ;; (defun ladicle/task-clocked-time ()
