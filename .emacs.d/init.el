@@ -181,7 +181,27 @@
  
   )
   
-
+(leaf *org-config
+  :setq ((org-todo-keywords quote
+			    ((sequence "APPT(a@/!)" "TODO(t)" "STARTED(s!)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCEL(c@/!)" "SOMEDAY(s@/!)")))
+	 (org-log-done quote time)
+	 (org-agenda-files quote
+			   ("~/org/gtd.org"))
+	 (org-refile-targets quote
+			     ((org-agenda-files :maxlevel . 3)))
+	 (hl-line-face quote underline)
+	 (calendar-holidays)
+	 (org-capture-templates quote
+				(("t" "Todo" entry
+				  (file+headline "~/org/gtd.org" "Inbox")
+				  "* TODO %? (wrote on %U)")
+				 ("k" "Knowledge" entry
+				  (file+headline "~/org/knowledge.org" "Inbox")
+				  "* %?  # Wrote on %U"))))
+  :config
+  (add-hook 'org-agenda-mode-hook
+	    '(lambda nil
+	       (hl-line-mode 1))))
 ;;set theme at last
 (leaf doom-themes
   :ensure t
@@ -242,33 +262,6 @@
 
 ;; 
 ;; ;;;# for org-mode
-;;   ;; TODO状態
-;;   (setq org-todo-keywords
-;;         '((sequence "APPT(a@/!)" "TODO(t)" "STARTED(s!)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCEL(c@/!)" "SOMEDAY(s@/!)"))
-;;         )
-;;   ;; DONEの時刻を記録
-;;   (setq org-log-done 'time)
-;;   ;; アジェンダ表示の対象ファイル
-;;   (setq org-agenda-files '(
-;;                            "~/org/gtd.org"
-;;                 ;;           "~/org/active"
-;;                            )
-;;         )
-;;   ;; refile target
-;;   (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
-;;   ;; アジェンダ表示で下線を用いる
-;;   (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
-;;   (setq hl-line-face 'underline)
-;;   ;; 標準の祝日を利用しない
-;;   (setq calendar-holidays nil)
-;;   ;; org-capture 構成
-;;  (setq org-capture-templates
-;;        '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Inbox")
-;;           "* TODO %? (wrote on %U)")
-;;          ("k" "Knowledge" entry (file+headline "~/org/knowledge.org" "Inbox")
-;;           "* %?  # Wrote on %U")
-;;          )
-;;  )
 
 ;; 
 ;; ;;;#settings by packages
