@@ -1,329 +1,329 @@
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;#Commentary:
-
-;;;; Emacsの公式ドキュメント一覧
-;; - [[info:emacs#Top][Emacs]]
-;; - [[info:eintr#Top][An Introduction to Programming in Emacs Lisp]]
-;; - [[info:elisp#Top][Emacs Lisp]]
-;; - Reference Cards (/etc/refcards)
-;;   - refcard.pdf :: Emacs
-;;   - calccard.pdf :: Calc
-;;   - dired-ref.pdf :: Dired
-;;   - gnus-booklet.pdf :: Gnus
-;;   - gnus-refcard.pdf :: Gnus
-;;   - orgcard.pdf :: Org
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;#Code:
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;#packeges
-;;;; 初期化
-;;   Emacsは init.el 読み込み後に各パッケージへのload-path設定を行い
-;;   XXX-autoloads.el を読み込む。このままでは init の段階では
-;;   require/locate-library ができないため、(package-initialize) を事前
-;;   に実行する。
-
-
-;;(setq package-enable-at-startup nil) ; 初期化済みなので自動初期化は停止。
-
-;; パッケージの情報は、~/.emacs.d/elpa/archives/ に格納される。自分で
-;; パッケージを作る場合は、 package-x.el の、
-;; `package-upload-{buffer,file}' を利用する。archive-contents ファイ
-;; ルが自動生成される。
-
-;;;; Package Archives
-;;; including use-package
-(eval-when-compile
-  (require 'package)
+;; <leaf-install-code>
+(eval-and-compile
+  (customize-set-variable
+   'package-archives '(("org" . "https://orgmode.org/elpa/")
+                       ("melpa" . "https://melpa.org/packages/")
+                       ("gnu" . "https://elpa.gnu.org/packages/")))
   (package-initialize)
-  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-
-  (unless (package-installed-p 'use-package)
+  (unless (package-installed-p 'leaf)
     (package-refresh-contents)
-    (package-install 'use-package)
-;;    (package-install 'diminish)
-    (package-install 'quelpa)
-    (package-install 'bind-key))
+    (package-install 'leaf))
 
-  (setq use-package-always-ensure t)
-  (setq use-package-expand-minimally t)
-
-  (require 'use-package))
-;;(require 'diminish)
-(require 'bind-key)
-
-
-;;;#direct settings
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;#appearance
-;; フォントをRictyに,ookisa wa height de kaerare ru.
-;; (set-face-attribute 'default nil
-;; ;;                   :family "Ricty Diminished"
-;; 		    :family "HackGenNerd Console"
-;;                     :height 150)
-
-;; 行間を指定
-;;(setq-default line-spacing 0.2)
-
-;; font (Ladicleさん)
-(if window-system
-    (progn
-      ;; UI parts
-      (toggle-scroll-bar 0)
-      (tool-bar-mode 0)
-      (menu-bar-mode 0)
-
-      ;; Japanese font settings
-      (defun set-japanese-font (family)
-        (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0208        (font-spec :family family))
-        (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0212        (font-spec :family family))
-        (set-fontset-font (frame-parameter nil 'font) 'katakana-jisx0201        (font-spec :family family)))
-
-      ;; Overwrite latin and greek char's font
-      (defun set-latin-and-greek-font (family)
-        (set-fontset-font (frame-parameter nil 'font) '(#x0250 . #x02AF) (font-spec :family family)) ; IPA extensions
-        (set-fontset-font (frame-parameter nil 'font) '(#x00A0 . #x00FF) (font-spec :family family)) ; latin-1
-        (set-fontset-font (frame-parameter nil 'font) '(#x0100 . #x017F) (font-spec :family family)) ; latin extended-A
-        (set-fontset-font (frame-parameter nil 'font) '(#x0180 . #x024F) (font-spec :family family)) ; latin extended-B
-        (set-fontset-font (frame-parameter nil 'font) '(#x2018 . #x2019) (font-spec :family family)) ; end quote
-        (set-fontset-font (frame-parameter nil 'font) '(#x2588 . #x2588) (font-spec :family family)) ; ?
-        (set-fontset-font (frame-parameter nil 'font) '(#x2500 . #x2500) (font-spec :family family)) ; 
-        (set-fontset-font (frame-parameter nil 'font) '(#x2504 . #x257F) (font-spec :family family)) ; box character
-        (set-fontset-font (frame-parameter nil 'font) '(#x0370 . #x03FF) (font-spec :family family)))
-
-      (setq use-default-font-for-symbols nil)
-      (setq inhibit-compacting-font-caches t)
-      ;; (setq jp-font-family "SF Mono Square")
-      ;; (setq default-font-family "FuraCode Nerd Font")
-      ;; (setq jp-font-family "HackGenNerd Console")
-      ;; (setq default-font-family "FiraCode NF")
-      (setq jp-font-family "Cica")
-      (setq default-font-family "Cica")
-
-      ;; (set-face-attribute 'default nil :family default-font-family)
-      (when (eq system-type 'windows-nt)
-                (set-face-attribute 'default nil :family jp-font-family :height 150))
-      (when (eq system-type 'darwin)
-                (set-face-attribute 'default nil :family jp-font-family :height 140))
-      (when (eq system-type 'gnu/linux)
-                (set-face-attribute 'default nil :family jp-font-family :height 150))
-      (set-japanese-font jp-font-family)
-      (set-latin-and-greek-font default-font-family)
-      (add-to-list 'face-font-rescale-alist (cons default-font-family 0.86))
-      (add-to-list 'face-font-rescale-alist (cons jp-font-family 1.0))))
-
-
-;; Default Encoding
-;;
-(set-language-environment 'Japanese)
-;;
-(set-keyboard-coding-system 'utf-8)
-;; coding-systemで自動的に文字コードを決定する際の優先するコードリストを設定する。
-(setq buffer-file-coding-system 'utf-8-unix)
-(prefer-coding-system 'utf-8-unix)
-
-;; 表示を単純化（スタートアップメッセージなし．スクラッチは空．ツールバー無し，
-;; スクロールバーなし）．，ベル無し．
-(setq ring-bell-function 'ignore)
-(setq inhibit-startup-message t)
-(setq initial-scratch-message "") 
-(tool-bar-mode -1)
-(set-scroll-bar-mode nil)
-(setq frame-title-format (format "%%f - Emacs@%s" (system-name)))
-
-
-
-;;;# ddskk
-;; load-path の設定
-;; ----------------
-;; 次のとおり 変数 load-path を設定してください。既にパスが通っているならば
-;; 不要です。
-;;   (setq load-path (cons "c:/emacs-26.3-x86_64/share/emacs/site-lisp/skk" load-path))
-
-;; info ディレクトリの設定
-;; -----------------------
-;; 次のとおり 変数 Info-default-directory-list を設定してください。既にパス
-;; が通っているならば不要です。
-;;   (setq Info-default-directory-list
-;;         (cons "c:/emacs-26.3-x86_64/share/info" Info-default-directory-list))
-
-;;(use-package ddskk)
-  ;; skkを標準の入力方法に
-  (setq default-input-method "japanese-skk")
-
-
-
-;;;# for org-mode
-  ;; TODO状態
-  (setq org-todo-keywords
-        '((sequence "APPT(a@/!)" "TODO(t)" "STARTED(s!)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCEL(c@/!)" "SOMEDAY(s@/!)"))
-        )
-  ;; DONEの時刻を記録
-  (setq org-log-done 'time)
-  ;; アジェンダ表示の対象ファイル
-  (setq org-agenda-files '(
-                           "~/org/gtd.org"
-                ;;           "~/org/active"
-                           )
-        )
-  ;; refile target
-  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
-  ;; アジェンダ表示で下線を用いる
-  (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
-  (setq hl-line-face 'underline)
-  ;; 標準の祝日を利用しない
-  (setq calendar-holidays nil)
-  ;; org-capture 構成
- (setq org-capture-templates
-       '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Inbox")
-          "* TODO %? (wrote on %U)")
-         ("k" "Knowledge" entry (file+headline "~/org/knowledge.org" "Inbox")
-          "* %?  # Wrote on %U")
-         )
- )
-
-
-;;;#settings by packages
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;#persp
-(use-package persp-mode
-  :disabled
-  :diminish
-  :commands (get-current-persp persp-contain-buffer-p)
-  :hook (after-init . persp-mode))
-
-
-;;;#all-the-icons
-(use-package all-the-icons
-  :custom
-  (all-the-icons-scale-factor 1.0))
-  
-
-;;;#emoji (for the following themes)
-(use-package emojify :ensure t
-  :if (display-graphic-p)
-  :hook (after-init . global-emojify-mode)
-  :bind
-  ("C-x e" . 'emojify-insert-emoji)
-  )
-
-
-;;;#which-key
-(use-package which-key
-    :diminish which-key-mode
-    :hook (after-init . which-key-mode))
-
-
-;;;#evil-mode
-(use-package evil)
-
-;;;#undo-tree
-(use-package undo-tree
-  :bind
-  ("M-/" . undo-tree-redo)
-  :config
-  (global-undo-tree-mode))
-
-;;;#theme
-;;;# doom theme
-(use-package doom-themes
+  (leaf leaf-keywords
     :ensure t
-    :custom
-     (doom-themes-enable-italic t)
-     (doom-themes-enable-bold t)
-     :custom-face
-     (doom-modeline-bar ((t (:background "#6272a4"))))
-      :config
-      (load-theme 'doom-dracula t)
-    (doom-themes-neotree-config)
-    (doom-themes-org-config)
-    )
+    :init
+    ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
+    (leaf hydra :ensure t)
+    (leaf el-get :ensure t)
+    (leaf blackout :ensure t)
 
-
-;;;# doom modeline
-(use-package doom-modeline
-  :custom
-  (doom-modeline-buffer-file-name-style 'truncate-with-project)
-  (doom-modeline-icon t)
-  (doom-modeline-major-mode-icon t)
-  (doom-modeline-minor-modes nil)
-  :hook
-  (after-init . doom-modeline-mode)
-  :config
-  ;; evil-state
-  (doom-modeline-def-segment evil-state
-    "The current evil state.  Requires `evil-mode' to be enabled."
-    (when (bound-and-true-p evil-local-mode)
-      (s-trim-right (evil-state-property evil-state :tag t))))
-  (line-number-mode 0)
-  (column-number-mode 0)
-  (doom-modeline-def-modeline 'main
-    '(bar workspace-name window-number evil-state  matches buffer-info remote-host buffer-position parrot selection-info)
-;;rest  '(god-state ryo-modal xah-fly-keys matches buffer-info remote-host buffer-position parrot selection-info)
-    '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
-
-;;;#task-measuring
-(defun ladicle/task-clocked-time ()
-        "Return a string with the clocked time and effort, if any"
-        (interactive)
-        (let* ((clocked-time (org-clock-get-clocked-time))
-               (h (truncate clocked-time 60))
-               (m (mod clocked-time 60))
-               (work-done-str (format "%d:%02d" h m)))
-          (if org-clock-effort
-              (let* ((effort-in-minutes
-                  (org-duration-to-minutes org-clock-effort))
-                 (effort-h (truncate effort-in-minutes 60))
-                 (effort-m (truncate (mod effort-in-minutes 60)))
-                 (effort-str (format "%d:%02d" effort-h effort-m)))
-            (format "%s/%s" work-done-str effort-str))
-            (format "%s" work-done-str))))
-;;;#pomodoro
-(use-package org-pomodoro
-    :after org-agenda
-    :custom
-    (org-pomodoro-ask-upon-killing t)
-    (org-pomodoro-format "%s")
-    (org-pomodoro-short-break-format "%s")
-    (org-pomodoro-long-brea-format  "%s")
-    :custom-face
-    (org-pomodoro-mode-line ((t (:foreground "#ff5555"))))
-    (org-pomodoro-mode-line-break   ((t (:foreground "#50fa7b"))))
-;;    :hook
-    ;; (org-pomodoro-started . (lambda () (notifications-notify
-    ;;                                            :title "org-pomodoro"
-    ;;                        :body "Let's focus for 25 minutes!"
-    ;; 			   ;;                           :app-icon "~/.emacs.d/img/001-food-and-restaurant.png"
-    ;; 			   )))
-    ;; (org-pomodoro-finished . (lambda () (notifications-notify
-    ;;                                            :title "org-pomodoro"
-    ;;                        :body "Well done! Take a break."
-    ;; 			   ;;                           :app-icon "~/.emacs.d/img/004-beer.png"
-    ;; 			   )))
     :config
-    :bind (:map org-agenda-mode-map
-                ("p" . org-pomodoro)))
+    ;; initialize leaf-keywords.el
+    (leaf-keywords-init)))
+;; </leaf-install-code>
 
+;; Now you can use leaf!
+(leaf leaf
+  :config
+  (leaf leaf-convert :ensure t)
+  (leaf leaf-tree
+    :ensure t
+    :custom ((imenu-list-size . 30)
+             (imenu-list-position . 'left))))
+
+(leaf macrostep
+  :ensure t
+  :bind (("C-c e" . macrostep-expand)))
+
+;;set theme at last
+(leaf doom-themes
+  :ensure t
+  :custom ((doom-themes-enable-italic . t)
+	   (doom-themes-enable-bold . t))
+  :custom-face ((doom-modeline-bar quote
+				   ((t
+				     (:background "#6272a4")))))
+  :require t
+  :config
+  (load-theme 'doom-dracula t)
+  (doom-themes-neotree-config)
+  (doom-themes-org-config))
+
+
+(provide 'init)
+
+;; ;;;#direct settings
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;#appearance
+;; ;; フォントをRictyに,ookisa wa height de kaerare ru.
+;; ;; (set-face-attribute 'default nil
+;; ;; ;;                   :family "Ricty Diminished"
+;; ;; 		    :family "HackGenNerd Console"
+;; ;;                     :height 150)
+
+;; ;; 行間を指定
+;; ;;(setq-default line-spacing 0.2)
+
+;; ;; font (Ladicleさん)
+;; (if window-system
+;;     (progn
+;;       ;; UI parts
+;;       (toggle-scroll-bar 0)
+;;       (tool-bar-mode 0)
+;;       (menu-bar-mode 0)
+
+;;       ;; Japanese font settings
+;;       (defun set-japanese-font (family)
+;;         (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0208        (font-spec :family family))
+;;         (set-fontset-font (frame-parameter nil 'font) 'japanese-jisx0212        (font-spec :family family))
+;;         (set-fontset-font (frame-parameter nil 'font) 'katakana-jisx0201        (font-spec :family family)))
+
+;;       ;; Overwrite latin and greek char's font
+;;       (defun set-latin-and-greek-font (family)
+;;         (set-fontset-font (frame-parameter nil 'font) '(#x0250 . #x02AF) (font-spec :family family)) ; IPA extensions
+;;         (set-fontset-font (frame-parameter nil 'font) '(#x00A0 . #x00FF) (font-spec :family family)) ; latin-1
+;;         (set-fontset-font (frame-parameter nil 'font) '(#x0100 . #x017F) (font-spec :family family)) ; latin extended-A
+;;         (set-fontset-font (frame-parameter nil 'font) '(#x0180 . #x024F) (font-spec :family family)) ; latin extended-B
+;;         (set-fontset-font (frame-parameter nil 'font) '(#x2018 . #x2019) (font-spec :family family)) ; end quote
+;;         (set-fontset-font (frame-parameter nil 'font) '(#x2588 . #x2588) (font-spec :family family)) ; ?
+;;         (set-fontset-font (frame-parameter nil 'font) '(#x2500 . #x2500) (font-spec :family family)) ; 
+;;         (set-fontset-font (frame-parameter nil 'font) '(#x2504 . #x257F) (font-spec :family family)) ; box character
+;;         (set-fontset-font (frame-parameter nil 'font) '(#x0370 . #x03FF) (font-spec :family family)))
+
+;;       (setq use-default-font-for-symbols nil)
+;;       (setq inhibit-compacting-font-caches t)
+;;       ;; (setq jp-font-family "SF Mono Square")
+;;       ;; (setq default-font-family "FuraCode Nerd Font")
+;;       ;; (setq jp-font-family "HackGenNerd Console")
+;;       ;; (setq default-font-family "FiraCode NF")
+;;       (setq jp-font-family "Cica")
+;;       (setq default-font-family "Cica")
+
+;;       ;; (set-face-attribute 'default nil :family default-font-family)
+;;       (when (eq system-type 'windows-nt)
+;;                 (set-face-attribute 'default nil :family jp-font-family :height 150))
+;;       (when (eq system-type 'darwin)
+;;                 (set-face-attribute 'default nil :family jp-font-family :height 140))
+;;       (when (eq system-type 'gnu/linux)
+;;                 (set-face-attribute 'default nil :family jp-font-family :height 150))
+;;       (set-japanese-font jp-font-family)
+;;       (set-latin-and-greek-font default-font-family)
+;;       (add-to-list 'face-font-rescale-alist (cons default-font-family 0.86))
+;;       (add-to-list 'face-font-rescale-alist (cons jp-font-family 1.0))))
+
+
+;; ;; Default Encoding
+;; ;;
+;; (set-language-environment 'Japanese)
+;; ;;
+;; (set-keyboard-coding-system 'utf-8)
+;; ;; coding-systemで自動的に文字コードを決定する際の優先するコードリストを設定する。
+;; (setq buffer-file-coding-system 'utf-8-unix)
+;; (prefer-coding-system 'utf-8-unix)
+
+;; ;; 表示を単純化（スタートアップメッセージなし．スクラッチは空．ツールバー無し，
+;; ;; スクロールバーなし）．，ベル無し．
+;; (setq ring-bell-function 'ignore)
+;; (setq inhibit-startup-message t)
+;; (setq initial-scratch-message "") 
+;; (tool-bar-mode -1)
+;; (set-scroll-bar-mode nil)
+;; (setq frame-title-format (format "%%f - Emacs@%s" (system-name)))
+
+
+;; 
+;; ;;;# ddskk
+;; ;; load-path の設定
+;; ;; ----------------
+;; ;; 次のとおり 変数 load-path を設定してください。既にパスが通っているならば
+;; ;; 不要です。
+;; ;;   (setq load-path (cons "c:/emacs-26.3-x86_64/share/emacs/site-lisp/skk" load-path))
+
+;; ;; info ディレクトリの設定
+;; ;; -----------------------
+;; ;; 次のとおり 変数 Info-default-directory-list を設定してください。既にパス
+;; ;; が通っているならば不要です。
+;; ;;   (setq Info-default-directory-list
+;; ;;         (cons "c:/emacs-26.3-x86_64/share/info" Info-default-directory-list))
+
+;; ;;(use-package ddskk)
+;;   ;; skkを標準の入力方法に
+;;   (setq default-input-method "japanese-skk")
+
+
+;; 
+;; ;;;# for org-mode
+;;   ;; TODO状態
+;;   (setq org-todo-keywords
+;;         '((sequence "APPT(a@/!)" "TODO(t)" "STARTED(s!)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCEL(c@/!)" "SOMEDAY(s@/!)"))
+;;         )
+;;   ;; DONEの時刻を記録
+;;   (setq org-log-done 'time)
+;;   ;; アジェンダ表示の対象ファイル
+;;   (setq org-agenda-files '(
+;;                            "~/org/gtd.org"
+;;                 ;;           "~/org/active"
+;;                            )
+;;         )
+;;   ;; refile target
+;;   (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+;;   ;; アジェンダ表示で下線を用いる
+;;   (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
+;;   (setq hl-line-face 'underline)
+;;   ;; 標準の祝日を利用しない
+;;   (setq calendar-holidays nil)
+;;   ;; org-capture 構成
+;;  (setq org-capture-templates
+;;        '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Inbox")
+;;           "* TODO %? (wrote on %U)")
+;;          ("k" "Knowledge" entry (file+headline "~/org/knowledge.org" "Inbox")
+;;           "* %?  # Wrote on %U")
+;;          )
+;;  )
+
+;; 
+;; ;;;#settings by packages
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;; ;;;#persp
+;; (use-package persp-mode
+;;   :disabled
+;;   :diminish
+;;   :commands (get-current-persp persp-contain-buffer-p)
+;;   :hook (after-init . persp-mode))
+
+;; 
+;; ;;;#all-the-icons
+;; (use-package all-the-icons
+;;   :custom
+;;   (all-the-icons-scale-factor 1.0))
+  
+;; 
+;; ;;;#emoji (for the following themes)
+;; (use-package emojify :ensure t
+;;   :if (display-graphic-p)
+;;   :hook (after-init . global-emojify-mode)
+;;   :bind
+;;   ("C-x e" . 'emojify-insert-emoji)
+;;   )
+
+;; 
+;; ;;;#which-key
+;; (use-package which-key
+;;     :diminish which-key-mode
+;;     :hook (after-init . which-key-mode))
+
+;; 
+;; ;;;#evil-mode
+;; (use-package evil)
+;; 
+;; ;;;#undo-tree
+;; (use-package undo-tree
+;;   :bind
+;;   ("M-/" . undo-tree-redo)
+;;   :config
+;;   (global-undo-tree-mode))
+
+;; ;;;#theme
+;; ;;;# doom theme
+
+;; 
+;; ;;;# doom modeline
+;; (use-package doom-modeline
+;;   :custom
+;;   (doom-modeline-buffer-file-name-style 'truncate-with-project)
+;;   (doom-modeline-icon t)
+;;   (doom-modeline-major-mode-icon t)
+;;   (doom-modeline-minor-modes nil)
+;;   :hook
+;;   (after-init . doom-modeline-mode)
+;;   :config
+;;   ;; evil-state
+;;   (doom-modeline-def-segment evil-state
+;;     "The current evil state.  Requires `evil-mode' to be enabled."
+;;     (when (bound-and-true-p evil-local-mode)
+;;       (s-trim-right (evil-state-property evil-state :tag t))))
+;;   (line-number-mode 0)
+;;   (column-number-mode 0)
+;;   (doom-modeline-def-modeline 'main
+;;     '(bar workspace-name window-number evil-state  matches buffer-info remote-host buffer-position parrot selection-info)
+;; ;;rest  '(god-state ryo-modal xah-fly-keys matches buffer-info remote-host buffer-position parrot selection-info)
+;;     '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
+;; 
+;; ;;;#task-measuring
+;; (defun ladicle/task-clocked-time ()
+;;         "Return a string with the clocked time and effort, if any"
+;;         (interactive)
+;;         (let* ((clocked-time (org-clock-get-clocked-time))
+;;                (h (truncate clocked-time 60))
+;;                (m (mod clocked-time 60))
+;;                (work-done-str (format "%d:%02d" h m)))
+;;           (if org-clock-effort
+;;               (let* ((effort-in-minutes
+;;                   (org-duration-to-minutes org-clock-effort))
+;;                  (effort-h (truncate effort-in-minutes 60))
+;;                  (effort-m (truncate (mod effort-in-minutes 60)))
+;;                  (effort-str (format "%d:%02d" effort-h effort-m)))
+;;             (format "%s/%s" work-done-str effort-str))
+;;             (format "%s" work-done-str))))
+;; ;;;#pomodoro
+;; (use-package org-pomodoro
+;;     :after org-agenda
+;;     :custom
+;;     (org-pomodoro-ask-upon-killing t)
+;;     (org-pomodoro-format "%s")
+;;     (org-pomodoro-short-break-format "%s")
+;;     (org-pomodoro-long-brea-format  "%s")
+;;     :custom-face
+;;     (org-pomodoro-mode-line ((t (:foreground "#ff5555"))))
+;;     (org-pomodoro-mode-line-break   ((t (:foreground "#50fa7b"))))
+;; ;;    :hook
+;;     ;; (org-pomodoro-started . (lambda () (notifications-notify
+;;     ;;                                            :title "org-pomodoro"
+;;     ;;                        :body "Let's focus for 25 minutes!"
+;;     ;; 			   ;;                           :app-icon "~/.emacs.d/img/001-food-and-restaurant.png"
+;;     ;; 			   )))
+;;     ;; (org-pomodoro-finished . (lambda () (notifications-notify
+;;     ;;                                            :title "org-pomodoro"
+;;     ;;                        :body "Well done! Take a break."
+;;     ;; 			   ;;                           :app-icon "~/.emacs.d/img/004-beer.png"
+;;     ;; 			   )))
+;;     :config
+;;     :bind (:map org-agenda-mode-map
+;;                 ("p" . org-pomodoro)))
+
+;; (custom-set-variables
+;;  ;; custom-set-variables was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(doom-themes-enable-bold t)
+;;  '(doom-themes-enable-italic t)
+;;  '(package-selected-packages
+;;    (quote
+;;     (doom-modeline use-package sound-wav package-utils org-pomodoro madhat2r-theme emojify doom-themes all-the-icons abyss-theme))))
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(doom-modeline-bar ((t (:background "#6272a4")))))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(doom-themes-enable-bold t)
- '(doom-themes-enable-italic t)
+ '(package-archives
+   (quote
+    (("org" . "https://orgmode.org/elpa/")
+     ("melpa" . "https://melpa.org/packages/")
+     ("gnu" . "https://elpa.gnu.org/packages/"))))
  '(package-selected-packages
    (quote
-    (doom-modeline use-package sound-wav package-utils org-pomodoro madhat2r-theme emojify doom-themes all-the-icons abyss-theme))))
+    (el-get hydra leaf-keywords leaf which-key use-package sound-wav perspective package-utils org-pomodoro madhat2r-theme evil emojify doom-themes doom-modeline ddskk abyss-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(doom-modeline-bar ((t (:background "#6272a4")))))
+ )
