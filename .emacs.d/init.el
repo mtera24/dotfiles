@@ -99,7 +99,9 @@
     :setq ((use-default-font-for-symbols)
 	   (inhibit-compacting-font-caches . t)
 	   (jp-font-family . "Cica")
-	   (default-font-family . "Cica"))
+;;	   (default-font-family . "Cica")
+	   (default-font-family . "FuraCode Nerd Font")
+	   )
     :config
     (defun set-japanese-font (family)
       (set-fontset-font
