@@ -203,6 +203,10 @@
 	    '(lambda nil
 	       (hl-line-mode 1)))
   (leaf org-pomodoro
+    :bind ((org-agenda-mode-map
+	    :package org-agenda
+	    ("p" . org-pomodoro)))
+
     :custom ((org-pomodoro-ask-upon-killing . t)
 	     (org-pomodoro-format . "%s")
 	     (org-pomodoro-short-break-format . "%s")
@@ -218,8 +222,6 @@
       (when (eq system-type 'darwin)
 	(setq alert-default-style 'osx-notifier))
       (require 'alert))
-    :bind ((org-agenda-mode-map
-	    ("p" . org-pomodoro)))
 
     ;; (add-hook 'org-pomodoro-started-hook
     ;; 	      #'(lambda nil
