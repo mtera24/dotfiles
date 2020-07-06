@@ -72,7 +72,16 @@
     :ensure t
     :setq (skk-large-jisyo . "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L")
     :setq (default-input-method . "japanese-skk"))
+  (leaf which-key
+    :ensure t
+    :custom
+    (which-key-max-description-length . 40)
+    (which-key-use-C-h-commands . t)
+    :hook
+    (emacs-startup-hook . which-key-mode))
+
   )
+
 (leaf *standard-configuration
   :config
   ;; font setting
