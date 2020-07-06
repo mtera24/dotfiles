@@ -201,7 +201,34 @@
   :config
   (add-hook 'org-agenda-mode-hook
 	    '(lambda nil
-	       (hl-line-mode 1))))
+	       (hl-line-mode 1)))
+  (leaf org-pomodoro
+    :custom ((org-pomodoro-ask-upon-killing . t)
+	     (org-pomodoro-format . "%s")
+	     (org-pomodoro-short-break-format . "%s")
+	     (org-pomodoro-long-break-format . "%s"))
+    :custom-face ((org-pomodoro-mode-line quote
+					  ((t
+					    (:foreground "#ff5555"))))
+		  (org-pomodoro-mode-line-break quote
+						((t
+						  (:foreground "#50fa7b")))))
+    :config
+    (with-eval-after-load 'org-pomodoro
+      (when (eq system-type 'darwin)
+	(setq alert-default-style 'osx-notifier))
+      (require 'alert))
+    :bind ((org-agenda-mode-map
+	    ("p" . org-pomodoro)))
+
+    ;; (add-hook 'org-pomodoro-started-hook
+    ;; 	      #'(lambda nil
+    ;; 		  (notifications-notify :title "org-pomodoro" :body "Let's focus for 25 minutes!" :app-icon "~/.emacs.d/img/001-food-and-restaurant.png")))
+    ;; (add-hook 'org-pomodoro-finished-hook
+    ;; 	      #'(lambda nil
+    ;; 		  (notifications-notify :title "org-pomodoro" :body "Well done! Take a break." :app-icon "~/.emacs.d/img/004-beer.png")))
+    )
+  )
 ;;set theme at last
 (leaf doom-themes
   :ensure t
