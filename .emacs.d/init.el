@@ -79,6 +79,14 @@
     (which-key-use-C-h-commands . t)
     :hook
     (emacs-startup-hook . which-key-mode))
+  (leaf beacon
+    :ensure t
+    :commands beacon-mode
+    :custom
+    (beacon-color . "yellow")
+    :hook
+    (emacs-startup-hook . beacon-mode))
+
 
   )
 
@@ -412,6 +420,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(beacon-color "yellow" t)
  '(doom-modeline-buffer-file-name-style (quote truncate-with-project))
  '(doom-modeline-icon t)
  '(doom-modeline-major-mode-icon t)
@@ -420,6 +429,10 @@
  '(doom-themes-enable-italic t)
  '(imenu-list-position (quote left) t)
  '(imenu-list-size 30 t)
+ '(org-pomodoro-ask-upon-killing t t)
+ '(org-pomodoro-format "%s" t)
+ '(org-pomodoro-long-break-format "%s" t)
+ '(org-pomodoro-short-break-format "%s" t)
  '(package-archives
    (quote
     (("org" . "https://orgmode.org/elpa/")
@@ -427,10 +440,14 @@
      ("gnu" . "https://elpa.gnu.org/packages/"))))
  '(package-selected-packages
    (quote
-    (el-get hydra leaf-keywords leaf which-key use-package sound-wav perspective package-utils org-pomodoro madhat2r-theme evil emojify doom-themes doom-modeline ddskk abyss-theme))))
+    (el-get hydra leaf-keywords leaf which-key use-package sound-wav perspective package-utils org-pomodoro madhat2r-theme evil emojify doom-themes doom-modeline ddskk abyss-theme)))
+ '(which-key-max-description-length 40 t)
+ '(which-key-use-C-h-commands t t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(doom-modeline-bar ((t (:background "#6272a4"))) nil "Customized with leaf in doom-themes block"))
+ '(doom-modeline-bar ((t (:background "#6272a4"))) nil "Customized with leaf in doom-themes block")
+ '(org-pomodoro-mode-line ((t (:foreground "#ff5555"))) nil "Customized with leaf in org-pomodoro block")
+ '(org-pomodoro-mode-line-break ((t (:foreground "#50fa7b"))) nil "Customized with leaf in org-pomodoro block"))
