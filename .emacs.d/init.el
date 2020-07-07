@@ -250,6 +250,12 @@
   (add-hook 'org-agenda-mode-hook
 	    '(lambda nil
 	       (hl-line-mode 1)))
+  (leaf custom-org-agenda-timedisplay
+    :setq ((org-agenda-current-time-string . "← now")
+	   (org-agenda-time-grid quote
+				 ((daily today require-timed)
+				  (900 1000 1100 1200 1300 1400 1500 1600 1700 1800)
+				  "-" "────────────────"))))
   (leaf org-pomodoro
     :bind ((org-agenda-mode-map
 	    :package org-agenda
