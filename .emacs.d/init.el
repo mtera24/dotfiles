@@ -95,7 +95,29 @@
 
 
   )
-
+(leaf all-the-icons
+  :ensure t)
+(leaf dashboard
+  :ensure t
+  :diminish t
+  :custom
+  (dashboard-startup-banner . 4)
+  (dashboard-items. '((recnets .15)
+		      (agenda . 5)))
+  :config
+  (dashboard-setup-startup-hook)
+  (let ((fname (expand-file-name "4.txt" dashboard-banners-directory)))
+    (with-temp-buffer
+      (insert "
+███╗   ███╗ █████╗ ████████╗████████╗███████╗███╗   ███╗ █████╗  ██████╗███████╗
+████╗ ████║██╔══██╗╚══██╔══╝╚══██╔══╝██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝
+██╔████╔██║███████║   ██║      ██║   █████╗  ██╔████╔██║███████║██║     ███████╗
+██║╚██╔╝██║██╔══██║   ██║      ██║   ██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║
+██║ ╚═╝ ██║██║  ██║   ██║      ██║   ███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║
+╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝")
+      (write-file fname))))
+                                                                                
+  
 (leaf *standard-configuration
   :config
   ;; font setting
@@ -205,7 +227,8 @@
 				  '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker))))
  
   )
-  
+
+
 (leaf *org-config
   :setq ((org-todo-keywords quote
 			    ((sequence "APPT(a@/!)" "TODO(t)" "STARTED(s!)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCEL(c@/!)" "SOMEDAY(s@/!)")))
@@ -429,10 +452,17 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(beacon-color "yellow" t)
- '(doom-modeline-buffer-file-name-style (quote truncate-with-project))
- '(doom-modeline-icon t)
- '(doom-modeline-major-mode-icon t)
- '(doom-modeline-minor-modes nil)
+ '(dashboard-items
+   (quote
+    ((recents . 15)
+     (projects . 5)
+     (bookmarks . 5)
+     (agenda . 5))) t)
+ '(dashboard-startup-banner 3 t)
+ '(doom-modeline-buffer-file-name-style (quote truncate-with-project) t)
+ '(doom-modeline-icon t t)
+ '(doom-modeline-major-mode-icon t t)
+ '(doom-modeline-minor-modes nil t)
  '(doom-themes-enable-bold t)
  '(doom-themes-enable-italic t)
  '(imenu-list-position (quote left) t)
