@@ -446,46 +446,4 @@
 ;;  ;; Your init file should contain only one such instance.
 ;;  ;; If there is more than one, they won't work right.
 ;;  '(doom-modeline-bar ((t (:background "#6272a4")))))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(beacon-color "yellow" t)
- '(dashboard-items
-   (quote
-    ((recents . 15)
-     (projects . 5)
-     (bookmarks . 5)
-     (agenda . 5))) t)
- '(dashboard-startup-banner 3 t)
- '(doom-modeline-buffer-file-name-style (quote truncate-with-project) t)
- '(doom-modeline-icon t t)
- '(doom-modeline-major-mode-icon t t)
- '(doom-modeline-minor-modes nil t)
- '(doom-themes-enable-bold t)
- '(doom-themes-enable-italic t)
- '(imenu-list-position (quote left) t)
- '(imenu-list-size 30 t)
- '(org-pomodoro-ask-upon-killing t t)
- '(org-pomodoro-format "%s" t)
- '(org-pomodoro-long-break-format "%s" t)
- '(org-pomodoro-short-break-format "%s" t)
- '(package-archives
-   (quote
-    (("org" . "https://orgmode.org/elpa/")
-     ("melpa" . "https://melpa.org/packages/")
-     ("gnu" . "https://elpa.gnu.org/packages/"))))
- '(package-selected-packages
-   (quote
-    (el-get hydra leaf-keywords leaf which-key use-package sound-wav perspective package-utils org-pomodoro madhat2r-theme evil emojify doom-themes doom-modeline ddskk abyss-theme)))
- '(which-key-max-description-length 40 t)
- '(which-key-use-C-h-commands t t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(doom-modeline-bar ((t (:background "#6272a4"))) nil "Customized with leaf in doom-themes block")
- '(org-pomodoro-mode-line ((t (:foreground "#ff5555"))) nil "Customized with leaf in org-pomodoro block")
- '(org-pomodoro-mode-line-break ((t (:foreground "#50fa7b"))) nil "Customized with leaf in org-pomodoro block"))
+
