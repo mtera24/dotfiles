@@ -79,6 +79,8 @@
     (which-key-use-C-h-commands . t)
     :hook
     (emacs-startup-hook . which-key-mode))
+  (leaf amx
+    :ensure t)
   (leaf beacon
     :ensure t
     :commands beacon-mode
