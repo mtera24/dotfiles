@@ -88,6 +88,10 @@
     (beacon-color . "yellow")
     :hook
     (emacs-startup-hook . beacon-mode))
+  (leaf rainbow-delimiters
+    :ensure t
+    :hook
+    (prog-mode . rainbow-delimiters-mode))
 
 
   )
