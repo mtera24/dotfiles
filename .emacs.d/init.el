@@ -247,6 +247,9 @@
 				  (file+headline "~/org/knowledge.org" "Inbox")
 				  "* %?  # Wrote on %U"))))
   :config
+  (leaf set-org-speed-command
+    :custom
+    (org-use-speed-commands . t))
   (add-hook 'org-agenda-mode-hook
 	    '(lambda nil
 	       (hl-line-mode 1)))
