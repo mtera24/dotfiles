@@ -92,6 +92,11 @@
     :ensure t
     :hook
     (prog-mode . rainbow-delimiters-mode))
+  (leaf rainbow-mode
+    :ensure t
+    :diminish
+    :hook
+    (emacs-lisp-mode . rainbow-mode))
   (leaf undo-tree
     :ensure t
     :bind
@@ -481,7 +486,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(beacon-color "yellow" t)
+ '(beacon-color "yellow")
  '(dashboard-items\. nil t)
  '(dashboard-startup-banner 4)
  '(doom-modeline-buffer-file-name-style (quote truncate-with-project))
@@ -503,9 +508,9 @@
      ("gnu" . "https://elpa.gnu.org/packages/"))))
  '(package-selected-packages
    (quote
-    (evil-operator-state-cursor evil-replace-state-cursor evil-insert-state-cursor evil-visual-state-cursor evil-normal-state-cursor evil-emacs-state-cursor setq which-key use-package transient-dwim sound-wav rainbow-delimiters projectile perspective package-utils org-pomodoro madhat2r-theme macrostep leaf-tree leaf-convert hydra evil emojify el-get doom-themes doom-modeline diminish ddskk dashboard blackout beacon amx abyss-theme)))
- '(which-key-max-description-length 40 t)
- '(which-key-use-C-h-commands t t))
+    (rainbow-mode evil-operator-state-cursor evil-replace-state-cursor evil-insert-state-cursor evil-visual-state-cursor evil-normal-state-cursor evil-emacs-state-cursor setq which-key use-package transient-dwim sound-wav rainbow-delimiters projectile perspective package-utils org-pomodoro madhat2r-theme macrostep leaf-tree leaf-convert hydra evil emojify el-get doom-themes doom-modeline diminish ddskk dashboard blackout beacon amx abyss-theme)))
+ '(which-key-max-description-length 40)
+ '(which-key-use-C-h-commands t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
