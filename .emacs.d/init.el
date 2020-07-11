@@ -481,41 +481,5 @@
 ;;  ;; If there is more than one, they won't work right.
 ;;  '(doom-modeline-bar ((t (:background "#6272a4")))))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(beacon-color "yellow")
- '(dashboard-items\. nil t)
- '(dashboard-startup-banner 4)
- '(doom-modeline-buffer-file-name-style (quote truncate-with-project))
- '(doom-modeline-icon t)
- '(doom-modeline-major-mode-icon t)
- '(doom-modeline-minor-modes nil)
- '(doom-themes-enable-bold t)
- '(doom-themes-enable-italic t)
- '(imenu-list-position (quote left) t)
- '(imenu-list-size 30 t)
- '(org-pomodoro-ask-upon-killing t t)
- '(org-pomodoro-format "%s" t)
- '(org-pomodoro-long-break-format "%s" t)
- '(org-pomodoro-short-break-format "%s" t)
- '(package-archives
-   (quote
-    (("org" . "https://orgmode.org/elpa/")
-     ("melpa" . "https://melpa.org/packages/")
-     ("gnu" . "https://elpa.gnu.org/packages/"))))
- '(package-selected-packages
-   (quote
-    (rainbow-mode evil-operator-state-cursor evil-replace-state-cursor evil-insert-state-cursor evil-visual-state-cursor evil-normal-state-cursor evil-emacs-state-cursor setq which-key use-package transient-dwim sound-wav rainbow-delimiters projectile perspective package-utils org-pomodoro madhat2r-theme macrostep leaf-tree leaf-convert hydra evil emojify el-get doom-themes doom-modeline diminish ddskk dashboard blackout beacon amx abyss-theme)))
- '(which-key-max-description-length 40)
- '(which-key-use-C-h-commands t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(doom-modeline-bar ((t (:background "#6272a4"))) nil "Customized with leaf in doom-themes block")
- '(org-pomodoro-mode-line ((t (:foreground "#ff5555"))) nil "Customized with leaf in org-pomodoro block")
- '(org-pomodoro-mode-line-break ((t (:foreground "#50fa7b"))) nil "Customized with leaf in org-pomodoro block"))
+
+
