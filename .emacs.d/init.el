@@ -241,6 +241,10 @@
 
 
 (leaf *org-config
+  :bind (("C-c l" . org-store-link)
+	 ("C-c a" . org-agenda)
+	 ("C-c c" . org-capture))
+  
   :setq ((org-todo-keywords quote
 			    ((sequence "APPT(a@/!)" "TODO(t)" "STARTED(s!)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCEL(c@/!)" "SOMEDAY(s@/!)")))
 	 (org-log-done quote time)
