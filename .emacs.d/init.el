@@ -105,20 +105,7 @@
     (global-undo-tree-mode))
   (leaf hydra
     :ensure t
-  )
-  (leaf evil
-    :ensure t
-    ;;:hook
-    ;;    (emacs-startup-hook . evil-mode)
-     ;;cursor-color
-    ;; (setq evil-emacs-state-cursor    '("#E74C3C" box))
-    ;; (setq evil-normal-state-cursor   '("#2ECC71" box))
-    ;; (setq evil-visual-state-cursor   '("#E67E22" box))
-    ;; (setq evil-insert-state-cursor   '("#E74C3C" bar))
-    ;; (setq evil-replace-state-cursor  '("#E74C3C" bar))
-    ;; (setq evil-operator-state-cursor '("#E74C3C" hollow))  
-    )
-  )
+)  )
 (leaf all-the-icons
   :ensure t)
 (leaf dashboard
@@ -326,6 +313,7 @@
   (load-theme 'doom-dracula t)
   (doom-themes-neotree-config)
   (doom-themes-org-config))
+
 
 ;; end of setting with leaf
 (provide 'init)
