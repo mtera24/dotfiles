@@ -80,7 +80,8 @@
     :hook
     (emacs-startup-hook . which-key-mode))
   (leaf amx
-    :ensure t)
+    :ensure t
+    :hook (emacs-startup-hook . amx-mode))
   (leaf beacon
     :ensure t
     :commands beacon-mode
